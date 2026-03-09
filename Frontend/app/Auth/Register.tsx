@@ -31,7 +31,7 @@ const Register = () => {
         email:email.trim(),
         password,
         phone:phone.trim(),
-        role
+        role 
       })
       setToastMessage('Account created successfully!')
       setToastType('success')

@@ -1,7 +1,9 @@
 from fastapi import APIRouter, Depends, HTTPException, UploadFile, File
 from sqlmodel import select
 from db import SessionDep
+from utils.job.upload import upload_file
 from models import User
+from config import settings
 from schema.users import LoginRequest, UserCreate
 from utils.userUtills import hash_password, authenticate_user, create_access_token,get_current_user,send_document_email
 
@@ -10,6 +12,10 @@ router = APIRouter(
     prefix='/users',
     tags=['users']
 )
+
+def allowed_file(filename: str):
+    return filename.split(".")[-1].lower() in settings.ALLOWED_EXTENSIONS
+
 
 # user routes // Job seekers
 
@@ -101,3 +107,35 @@ async def upload_doc(
 @router.get("/me")
 def read_users_me(current_user: User = Depends(get_current_user)):
     return current_user
+
+
+@router.post('/upload_avatar/{user_id}')
+async def upload_avatar(user_id:str, session:SessionDep, file: UploadFile = File(...)):
+    if not allowed_file(file.filename):
+        raise HTTPException(
+            status_code=400,
+            detail="Only JPG, JPEG, PNG and WEBP files are allowed"
+        )
+
+    image_url = await upload_file(file)
+
+    user = session.exec(select(User).where(User.id == user_id)).first()
+
+    if not user:
+        raise HTTPException(
+            status_code=404,
+            detail="Job not found"
+        )
+    
+    user.profile_URL = image_url
+
+    session.add(user)
+    session.commit()
+    session.refresh(user)
+
+    return {
+        "success": True,
+        "image_url": image_url,
+        "user": user
+    }
+

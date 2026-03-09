@@ -52,7 +52,7 @@ const Toast = ({
   return (
     <Animated.View
       style={{ opacity: fadeAnim }}
-      className={`absolute w-[94%] bottom-12 self-center px-5 py-3 flex flex-row gap-x-5 rounded-lg ${colors[type]}`}
+      className={`absolute w-[94%] bottom-12 self-center px-5 py-3 flex flex-row gap-x-5 rounded-lg z-50 ${colors[type]}`}
     >
         {type === 'error'? <Text><FontAwesome name="warning" size={23} color={'white'}/></Text>:
         type === 'success'?<Text><FontAwesome name="check" size={23} color={'white'}/></Text>:

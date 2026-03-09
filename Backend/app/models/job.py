@@ -8,7 +8,7 @@ from utils.dbUtils import generate_job_id
 class Job(SQLModel,table=True):
     __tablename__ = "jobs"
 
-    id:str = Field(default=generate_job_id, index=True, primary_key=True, unique=True)
+    id:str = Field(default_factory=generate_job_id, index=True, primary_key=True, unique=True)
     employer_id:str = Field(ForeignKey('users.id'))
     title:str = Field(index=True)
     description:str = Field(index=True)
@@ -16,7 +16,7 @@ class Job(SQLModel,table=True):
     category:list[str] = Field(sa_column=Column(JSON))
     payment:float = Field(index=True)
     cover_image_URL:Optional[str] = Field(index=True)
-    created_at:datetime = Field(default=datetime.utcnow)
+    created_at:datetime = Field(default_factory=datetime.utcnow)
 
 
 class SavedJob(SQLModel,table=True):

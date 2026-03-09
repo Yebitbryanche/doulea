@@ -11,6 +11,10 @@ class Settings(BaseSettings):
     SECRET_KEY:str = os.getenv('')
     EMAIL:str = os.getenv('')
     EMAIL_PASSWORD:str = os.getenv('')
+    CLOUDINARY_API_KEY:str = os.getenv('')
+    CLOUDINARY_API_SECRET:str = os.getenv('')
+    CLOUD_NAME:str = os.getenv('')
+    ALLOWED_EXTENSIONS:list[str] = os.getenv('')
 
     class Config:
         env_file = ".env"

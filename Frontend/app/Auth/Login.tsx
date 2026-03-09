@@ -1,6 +1,7 @@
 import RegisterButton from '@/components/Buttons/RgisterButton';
 import RegistrationHeader from '@/components/Header/RegistrationHeader';
 import InputField from '@/components/Input/InputField';
+import * as SecureStore from "expo-secure-store";
 import images from '@/types/images';
 import { Link, router } from 'expo-router';
 import React, { useState } from 'react';
@@ -23,6 +24,12 @@ const Login = () => {
         const response = await apiClient.post('/users/signin',{
         email,password}
         )
+
+        const token = response.data.access_token
+        
+        // save token
+        await SecureStore.setItemAsync("userToken", token)
+
         setToastMessage('SignUp successful!')
         setToastType('success')
         setToastVisible(true)
