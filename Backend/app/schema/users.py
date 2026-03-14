@@ -1,5 +1,6 @@
 from pydantic import BaseModel
 from typing import Optional
+from sqlmodel import SQLModel
 
 class UserCreate(BaseModel):
     user_name: str
@@ -9,6 +10,14 @@ class UserCreate(BaseModel):
     address: Optional[str] = None   # match SQLModel field
     profile_URL: Optional[str] = None
     role: Optional[bool] = False
+
+class UserPublic(SQLModel):
+    id: str
+    email: str
+    user_name: str | None
+    profile_URL: str | None
+    address:str | None
+    phone:str | None
 
 class LoginRequest(BaseModel):
     email: str

@@ -1,11 +1,14 @@
 import { Stack } from "expo-router";
 import "./global.css"
 import { AuthProvider } from "./context/AuthContext";
+import { UploadImageProvider } from "./context/Uploadcontext";
 
 export default function RootLayout() {
   return (
     <AuthProvider>
-      <Stack screenOptions={{headerShown:false}} />
+      <UploadImageProvider>
+        <Stack screenOptions={{headerShown:false}} />
+      </UploadImageProvider>
     </AuthProvider>
   )
 }
