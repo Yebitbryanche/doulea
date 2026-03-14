@@ -84,6 +84,9 @@ const handleUpload = async () => {
       category:selectedCategories,
       payment:parseFloat(payment)
     })
+
+    const jobID = response.data.Job.id
+    console.log('Job id:',jobID)
           setToastMessage('Upload successful!')
           setToastType('success')
           setToastVisible(true)
@@ -94,7 +97,9 @@ const handleUpload = async () => {
           setPayment("")
           setSelectedCategories([])
           setTimeout(() => {
-            router.replace('/pages/uploadJobCover')
+            router.replace({
+              pathname:'/pages/uploadJobCover',
+              params:{job_id:jobID}})
           },1000)
     console.log(response.data)
   }

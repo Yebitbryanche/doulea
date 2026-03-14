@@ -105,9 +105,7 @@ def get_current_user(
     except JWTError:
         raise credentials_exception
 
-    user = session.exec(
-        select(User).where(User.email == email)
-    ).first()
+    user = session.exec(select(User).where(User.email == email)).first()
 
     if user is None:
         raise credentials_exception

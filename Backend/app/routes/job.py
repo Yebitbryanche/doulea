@@ -3,6 +3,7 @@ from config import settings
 from sqlmodel import select
 from utils.job.upload import upload_file
 from schema.job import JobCreate,JobUpdate
+from schema.users import UserPublic
 from models.job import Job
 from db import SessionDep
 from utils.userUtills import get_current_user
@@ -56,14 +57,14 @@ def upload_job(job: JobCreate, session: SessionDep,currentUser = Depends(get_cur
         raise HTTPException(status_code=401, detail="unauthorized user")
     # Convert JobCreate (Schema) into Job (Table Model)
     # .model_dump() extracts the data as a dictionary
-    db_job = Job(**job.model_dump())
+    db_job = Job(**job.model_dump(),employer_id=currentUser.id)
 
     session.add(db_job)
     session.commit()
     session.refresh(db_job)
 
     return {"Job":db_job,
-            "user":currentUser}
+            "user":UserPublic.model_validate(currentUser)}
 
 ## ------------
 ## update job
