@@ -31,7 +31,7 @@ export const AuthProvider = ({ children }: any) => {
         setLoading(false);
         return;
       }
-      console.log(token)
+      //console.log(token)
 
       const response = await apiClient.get("/users/me");
       console.log(response.data)

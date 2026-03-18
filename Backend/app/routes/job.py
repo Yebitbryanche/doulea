@@ -5,6 +5,7 @@ from utils.job.upload import upload_file
 from schema.job import JobCreate,JobUpdate
 from schema.users import UserPublic
 from models.job import Job
+from models import User
 from db import SessionDep
 from utils.userUtills import get_current_user
 
@@ -95,8 +96,47 @@ def update_job(job_id:str, job:JobUpdate, session:SessionDep):
 ## get all jobs
 ## ------------
 
-@router.get('get_jobs')
-def get_jobs(session:SessionDep):
+@router.get("/get_jobs")
+def get_jobs(session: SessionDep):
+
     jobs = session.exec(select(Job)).all()
 
-    return jobs
+    result = []
+
+    for job in jobs:
+
+        employer = session.get(User, job.employer_id)
+
+        result.append({
+            "id": job.id,
+            "title": job.title,
+            "employer_id":job.employer_id,
+            "location": job.location,
+            "payment": job.payment,
+            "description": job.description,
+            "category": job.category,
+            "cover_image_URL": job.cover_image_URL,
+            "created_at":job.created_at,
+            "employer": employer
+        })
+
+    return result
+
+
+
+#----------------------
+# select particular job
+#----------------------
+
+@router.get('/job/{id}')
+def getSingleJob(session:SessionDep, id:str):
+    job = session.exec(select(Job).where(Job.id == id)).first()
+
+    if not job:
+        raise HTTPException(status_code=404, detail="Job not found")
+    
+    employer = session.exec(select(User).where(User.id == job.employer_id)).first()
+    return {
+        "job":job,
+        "employer":employer
+    }

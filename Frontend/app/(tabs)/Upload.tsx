@@ -121,7 +121,7 @@ const handleUpload = async () => {
             <View>
               <Text className='font-medium'>Job Description</Text>
               <TextInput
-              className="border text-md border-gray-300 border-2 w-[320px] h-[100] rounded-2xl focus:border-primary/50 focus:border-2 pr-12"
+              className="border text-md border-gray-300 border-1 w-[330px] h-[100] rounded-2xl focus:border-primary/50 focus:border-1 pr-12"
               multiline
               numberOfLines={4}
               textAlignVertical='top'
@@ -134,7 +134,7 @@ const handleUpload = async () => {
             <View>
               <Text className='font-medium'>Payment Amount</Text>
               <TextInput
-              className="border text-md border-gray-300 border-2 w-[320px] rounded-2xl focus:border-primary/50 focus:border-2 pr-12"
+              className="border text-md border-gray-300 border-1 w-[330px] rounded-2xl focus:border-primary/50 focus:border-1 pr-12"
               placeholder='amount in XAF'
               value={payment}
               keyboardType='numeric'

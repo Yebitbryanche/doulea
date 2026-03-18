@@ -109,6 +109,7 @@ def read_users_me(current_user: User = Depends(get_current_user)):
     return current_user
 
 
+
 @router.post('/upload_avatar/{user_id}')
 async def upload_avatar(user_id:str, session:SessionDep, file: UploadFile = File(...)):
     if not allowed_file(file.filename):
