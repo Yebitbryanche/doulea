@@ -23,14 +23,10 @@ class Job(SQLModel,table=True):
 
     employer: Optional["User"] = Relationship(back_populates="jobs")
 
+    embedding: Optional[list[float]] = Field(
+        sa_column=Column(JSON)
+    )
 
-class SavedJob(SQLModel,table=True):
-    __tablename__ = "saved_jobs"
-
-    id:int = Field(primary_key=True)
-    job_id:str = Field(foreign_key=("jobs.id"))
-    job_seeker_id:str = Field(foreign_key=("user.id"))
-    saved_at:datetime = Field(default=datetime.utcnow)
 
 
 class JobLike(SQLModel,table=True):
@@ -39,5 +35,5 @@ class JobLike(SQLModel,table=True):
     id:int = Field(primary_key=True)
     job_id:str = Field(foreign_key=("jobs.id"))
     job_seeker_id:str = Field(foreign_key=("user.id"))
-    created_at:datetime = Field(default=datetime.utcnow)
+    created_at:datetime = Field(default_factory=datetime.utcnow)
 

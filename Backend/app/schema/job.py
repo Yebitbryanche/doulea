@@ -14,3 +14,6 @@ class JobUpdate(SQLModel):
     location:str
     category:list[str]
     payment:float
+
+class LikeRequest(SQLModel):
+    job_id: str

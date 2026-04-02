@@ -2,7 +2,8 @@ import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import Octicons from '@expo/vector-icons/Octicons';
 import React, { useState } from 'react';
 import { View, Text, Image, ImageSourcePropType, TouchableOpacity } from 'react-native';
-import { timeAgo } from '../utils/contraints';
+import { formatPrice, timeAgo } from '../utils/contraints';
+import { FontAwesome6 } from '@expo/vector-icons';
 
 export interface EmployerProps{
     user_name:string
@@ -10,14 +11,14 @@ export interface EmployerProps{
 }
 
 export interface CardProps{
-    id?:string
+    id:string
     cover_image_URL?:string
     title?:string
-    description?:string
+    description:string
     created_at:string
     category?:string[]
     employer_Rating?:number
-    payment?:number
+    payment:number
     employer_name?:string
     employer_verified?:boolean
     Saveicon?:React.ReactNode
@@ -41,34 +42,48 @@ const JobCard = ({
     setverified = false
 }:CardProps) => {
     const [hasImage,setHasImage] = useState(false)
+
+    const truncate = (text: string, maxLength = 70) => {
+    if (!text) return "";
+    return text.length > maxLength
+        ? text.slice(0, maxLength) + " See More..."
+        : text;
+    };
+
   return (
-    <View className='bg-white w-[320px] rounded-2xl m-3 shadow shadow-inset-xl'>
-        {cover_image_URL && cover_image_URL !== "null" ? (
+    <View className='bg-white w-[324px] rounded-2xl m-3 p-1'
+        style={{
+            elevation:5,
+            shadowColor:"#000",
+            shadowOffset:{width:0,height:0},
+            shadowOpacity:0.05,
+            shadowRadius:6,
+        }}>
         <Image
-            source={{ uri: cover_image_URL }}
-            className='w-full h-[150px] rounded-tl-2xl rounded-tr-2xl'
+            source={cover_image_URL && cover_image_URL !== "null" ?{ uri: cover_image_URL }: require('../../assets/images/defaultImage.png')}
+            className='w-full h-[180px] rounded-2xl'
+             resizeMode={cover_image_URL && cover_image_URL !== "null"?"cover":"contain"}
         />
-        ) : (
-        null
-        )}
-        <View className='p-[0.7rem]'>
-            <View className='flex flex-row items-center justify-between'>
-                <Text className='text-md font-bold'>{title}</Text>
-                <Text className='text-xs text-gray-400'>{timeAgo(created_at?.toString())}</Text>
-            </View>
-            <Text className='text-sm py-2 font-medium'>{description}</Text>
-            <View className=' flex flex-row items-center justify-between'>
-                <View className='flex flex-row gap-x-3 py-2'>
-                    {category?.map((category,index) =>(
-                        <Text key={index} className='py-1 px-2 bg-secondary rounded-lg text-xs'>{category}</Text>
-                    ))}
+        <View className='bg-white p-1 right-2 top-2 rounded-2xl absolute'>
+            <TouchableOpacity ><Text className='text-primary'>{Likeicon}</Text></TouchableOpacity>
+        </View>
+        <View className='bg-white p-1 absolute flex flex-row w-10 top-2 left-2 rounded-md items-center gap-x-1'>
+            <FontAwesome6 name='star' size={10} color={"#f3db07"} />
+            <Text className='text-xs font-black'>{!employer_Rating?"0":employer_Rating}</Text>
+        </View>
+         
+        <View className='p-[0.3rem]'>
+            <Text className='text-sm font-black'>{title}</Text>
+            {/*  */}
+            <Text className='text-sm py-2 font-medium'>{truncate(description)}</Text>
+                <View>
+                <View className='flex flex-row gap-x-3 py-2'>{
+                    category?.map((category,index) =>
+                    (<Text key={index} className='py-1 px-2 bg-secondary rounded-lg text-xs'>{category}</Text>))}</View>
                 </View>
-                <Text>{employer_Rating}</Text>
-            </View>
-            <Text className='text-sm font-bold text-gray-400'>{payment} XAF</Text>
+            <Text className='text-sm font-bold text-gray-400'>{formatPrice(payment)} XAF</Text>
             <View className='flex flex-row justify-between items-center'>
-                <View className='flex flex-row gap-x-3'>
-                    <Text className='text-sm font-bold'>Contact {employer_name}</Text>
+                <View className='flex flex-row justify-between w-full'>
                     {!employer_verified?
                 
                      <View className='flex flex-row items-center'>
@@ -87,10 +102,7 @@ const JobCard = ({
                             Verified
                         </Text>
                     </View>}
-                </View>
-                <View className='flex flex-row gap-x-5 items-center'>
-                    <TouchableOpacity ><Text className='text-primary'>{Saveicon}</Text></TouchableOpacity>
-                    <TouchableOpacity ><Text className='text-primary'>{Likeicon}</Text></TouchableOpacity>
+                    <Text className='text-xs text-gray-400'>{timeAgo(created_at?.toString())}</Text>
                 </View>
             </View>
         </View>

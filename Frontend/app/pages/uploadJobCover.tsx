@@ -5,6 +5,7 @@ import RegisterButton from "@/components/Buttons/RgisterButton";
 import Toast from '@/components/Toast';
 import { router, useLocalSearchParams } from "expo-router";
 import { useUpload } from "../context/Uploadcontext";
+import ImageLoader from "@/components/Loader/ImageUpload";
 
 export default function AddImageScreen() {
 
@@ -66,6 +67,7 @@ export default function AddImageScreen() {
       message={toastMessage}
       onHide={() => !toastVisible} 
       />
+      {loading && <ImageLoader/>}
     </View>
   )
 }

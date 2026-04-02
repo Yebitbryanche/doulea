@@ -29,3 +29,28 @@
   const months = Math.floor(days / 30);
   return `${months} month${months > 1 ? "s" : ""} ago`;
 };
+
+
+export const formatedDate = (date_:string) => {
+  const date = new Date(date_);
+  const formatedDate = `${date.getDate()}/${date.getMonth()}/${date.getFullYear()}`;
+  return formatedDate
+}
+
+export const formatPrice = (value: number) => {
+  if (!value) return "0";
+
+  if (value >= 1_000_000_000) {
+    return (value / 1_000_000_000).toFixed(1) + "B";
+  }
+
+  if (value >= 1_000_000) {
+    return (value / 1_000_000).toFixed(1) + "M";
+  }
+
+  if (value >= 1_000) {
+    return (value / 1_000).toFixed(1) + "K";
+  }
+
+  return value.toString();
+};
