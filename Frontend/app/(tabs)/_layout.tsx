@@ -7,7 +7,7 @@ import Fontisto from '@expo/vector-icons/Fontisto';
 export default function TabLayout(){
     return(
         <Tabs screenOptions={{
-            tabBarActiveTintColor:"#235347",
+            tabBarActiveTintColor:"#2563EB",
             headerShown:false,
             tabBarLabelStyle:{
                 fontWeight:700,

@@ -1,10 +1,11 @@
 from fastapi import APIRouter, Depends, HTTPException, UploadFile, File
-from sqlmodel import select
+from sqlmodel import select, func
 from db import SessionDep
 from utils.job.upload import upload_file
-from models import User
+from models import User,EmployerRating
+from models.job import Job
 from config import settings
-from schema.users import LoginRequest, UserCreate
+from schema.users import LoginRequest, ReviewModel, UserCreate, UserUpdate
 from utils.userUtills import hash_password, authenticate_user, create_access_token,get_current_user,send_document_email
 
 
@@ -74,8 +75,9 @@ async def login_user(session:SessionDep, data:LoginRequest):
         }
     }
 
-
+# ----------------------------------
 # uploading id or important document
+# ----------------------------------
 
 @router.post('upload_doc/{user_id}')
 async def upload_doc(
@@ -108,6 +110,9 @@ async def upload_doc(
 def read_users_me(current_user: User = Depends(get_current_user)):
     return current_user
 
+#------------------------------
+# upload avatar
+# ----------------------------
 
 @router.post('/upload_avatar/{user_id}')
 async def upload_avatar(user_id:str, session:SessionDep, file: UploadFile = File(...)):
@@ -139,3 +144,137 @@ async def upload_avatar(user_id:str, session:SessionDep, file: UploadFile = File
         "user": user
     }
 
+
+#------------------------------------------
+# edit user profile
+#------------------------------------------
+
+@router.put('/update_profile/{user_id}')
+def updateProfile(user_id:str, user:UserUpdate, session:SessionDep):
+    existing_user = session.exec(select(User).where(User.id == user_id)).first()
+
+    if not existing_user:
+        raise HTTPException(
+            status_code=404,
+            detail="User not found"
+        )
+    
+    profile_update = user.model_dump(exclude_unset=True)
+
+    for key, value in profile_update.items():
+        setattr(existing_user, key, value)
+
+    session.add(existing_user)
+    session.commit()
+    session.refresh(existing_user)
+
+    return existing_user
+
+
+#--------------------------
+# write a review for an employer
+#---------------------------
+
+
+@router.post("/review/{user_id}")
+def write_review(
+    user_id: str,
+    review: ReviewModel,
+    session: SessionDep
+):
+    # check if employer exists
+    existing_employer = session.exec(select(User).where(User.id == review.employer_id)).first()
+    if not existing_employer:
+        raise HTTPException(status_code=404, detail="Employer not found")
+
+    # check if user exists
+    user = session.exec(select(User).where(User.id == user_id)).first()
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
+
+    # Assign foreign keys
+    review_db = EmployerRating(
+        job_seeker_id=user_id,
+        employer_id=review.employer_id,
+        rating=review.rating,
+        review = review.review,
+        comment=review.comment
+    )
+
+    # Add to DB
+    session.add(review_db)
+    session.commit()
+    session.refresh(review_db)
+    return {"message": "Review submitted successfully", "review": review}
+
+
+
+#--------------------------
+#get Employer and reviews
+# route /users/employer/{user_id}
+#-------------------------
+
+
+@router.get("/employer/{user_id}")
+def get_employer_reviews(
+    user_id: str,
+    session: SessionDep,
+    limit: int = 5,
+    offset: int = 0
+):
+    # 1️⃣ Fetch employer info
+    employer = session.get(User, user_id)
+    if not employer:
+        raise HTTPException(status_code=404, detail="Employer not found")
+
+    # 2️⃣ Fetch jobs/posts assigned to this employer
+    jobs = session.exec(
+        select(Job).where(Job.employer_id == user_id)
+    ).all()
+
+    # 3️⃣ Fetch reviews for this employer
+    reviews_query = (
+        select(EmployerRating, User)
+        .join(User, EmployerRating.job_seeker_id == User.id)  # user who wrote review
+        .where(EmployerRating.employer_id == user_id)
+        .order_by(EmployerRating.created_at.desc())
+        .offset(offset)
+        .limit(limit)
+    )
+    reviews_data = session.exec(reviews_query).all()
+
+    reviews = []
+    for review, reviewer in reviews_data:
+        reviews.append({
+            "id": review.id,
+            "rating": review.rating,
+            "comment": review.comment,
+            "review":review.review,
+            "created_at": review.created_at,
+            "reviewer": {
+                "id": reviewer.id,
+                "name": reviewer.user_name,
+                "avatar": reviewer.profile_URL
+            }
+        })
+
+    # 4️⃣ Calculate average rating
+    avg_rating = session.exec(
+        select(func.avg(EmployerRating.rating)).where(EmployerRating.employer_id == user_id)
+    ).one()
+
+    return {
+        "employer": {
+            "id": employer.id,
+            "name": employer.user_name,
+            "email": getattr(employer, "email", None),
+            "avatar": employer.profile_URL,
+            "bio":employer.bio
+        },
+        "average_rating": avg_rating or 0,
+        "jobs": [{"id": job.id, "title": job.title} for job in jobs],
+        "reviews": reviews,
+        "total_reviews": session.exec(
+            select(func.count()).where(EmployerRating.employer_id == user_id)
+        ).one()
+    }

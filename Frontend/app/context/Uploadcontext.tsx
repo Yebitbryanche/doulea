@@ -42,19 +42,33 @@ const UploadImageContext = createContext<UploadImageTypes | undefined>(undefined
 
     // upload image
     const uploadImage = async (endpoint:string) => {
+        try{
+            setLoading(true)
+            if (!image) {
+            setToastMessage('Please choose an image')
+            setToastType('error')
+            setToastVisible(true)
+            return
+            }
 
-        if (!image) {
-        setToastMessage('Please choose an image')
-        setToastType('error')
-        setToastVisible(true)
-        return
+            const fileName = image.split("/").pop() || "cover.jpg"
+
+            await requestUpload(image, fileName, endpoint)
+
+            //router.replace("/(tabs)/Home")
         }
-
-        const fileName = image.split("/").pop() || "cover.jpg"
-
-        await requestUpload(image, fileName, endpoint)
-
-        router.replace("/(tabs)/Home")
+        catch(error:any){
+            console.error(error)
+            if (error) {
+            setToastMessage('Please choose an image')
+            setToastType('error')
+            setToastVisible(true)
+            return
+            }
+        }
+        finally{
+            setLoading(false)
+        }
     }
 
     // request upload

@@ -35,7 +35,7 @@ const InputField = ({
         <TextInput
           placeholder={placeholder}
           onChangeText={onChange}
-          className="border border-gray-300 border-2 w-[320px] rounded-2xl focus:border-primary/50 focus:border-2 pr-12"
+          className="border border-gray-300 border-1 w-[330px] rounded-2xl focus:border-primary/50 focus:border-1 pr-12"
           value={value}
           secureTextEntry={secureText && !showPassword}
           keyboardType={keyboardType}

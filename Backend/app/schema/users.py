@@ -11,6 +11,13 @@ class UserCreate(BaseModel):
     profile_URL: Optional[str] = None
     role: Optional[bool] = False
 
+class UserUpdate(SQLModel):
+    user_name:str
+    email:str
+    phone:str
+    address: Optional[str] = None
+    bio:str
+
 class UserPublic(SQLModel):
     id: str
     email: str
@@ -23,3 +30,8 @@ class LoginRequest(BaseModel):
     email: str
     password: str 
 
+class ReviewModel(SQLModel):
+    rating:int
+    review:str
+    comment:str
+    employer_id:str

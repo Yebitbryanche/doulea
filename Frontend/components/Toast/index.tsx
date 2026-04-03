@@ -2,10 +2,11 @@ import FontAwesome from "@expo/vector-icons/FontAwesome";
 import React, { useEffect, useState } from "react";
 import { Text, Animated } from "react-native";
 
-type ToastType = "success" | "error" | "info";
+export type ToastType = "success" | "error" | "info";
 
 interface ToastProps {
   message: string;
+  
   type?: ToastType;
   visible: boolean;
   duration?: number;

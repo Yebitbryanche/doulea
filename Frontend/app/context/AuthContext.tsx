@@ -5,6 +5,9 @@ import apiClient from "@/app/apiClient";
 type User = {
   id: string;
   email: string;
+  bio:string;
+  address:string;
+  phone:string;
   user_name?: string;
   profile_URL?:string;
   is_verified:boolean;
@@ -31,7 +34,7 @@ export const AuthProvider = ({ children }: any) => {
         setLoading(false);
         return;
       }
-      console.log(token)
+      //console.log(token)
 
       const response = await apiClient.get("/users/me");
       console.log(response.data)
