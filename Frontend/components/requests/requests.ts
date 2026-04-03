@@ -46,3 +46,31 @@ export const getReviews = async (id:string | string[], offset:number, limit:numb
         console.error(error.message)
     }
 }
+
+// user profile update request
+export const updateProfile = async (
+    id:string|undefined,
+    user_name:string|undefined,
+    email:string|undefined,
+    phone:string | undefined, 
+    address:string | undefined,
+    bio:string|undefined) => {
+    try{
+        const response = await apiClient.put(`/users/update_profile/${id}`,
+            {
+                user_name,
+                email,
+                phone,
+                address,
+                bio,
+            }
+            
+        )
+        console.log(response.data)
+        return response
+
+    }
+    catch(error:any){
+        console.error(error.message)
+    }
+}

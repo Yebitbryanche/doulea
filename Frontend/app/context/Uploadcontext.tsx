@@ -55,7 +55,7 @@ const UploadImageContext = createContext<UploadImageTypes | undefined>(undefined
 
             await requestUpload(image, fileName, endpoint)
 
-            router.replace("/(tabs)/Home")
+            //router.replace("/(tabs)/Home")
         }
         catch(error:any){
             console.error(error)

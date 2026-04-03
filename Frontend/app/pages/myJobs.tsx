@@ -80,7 +80,7 @@ const myJobs = () => {
     <View className="items-center rounded-3xl p-3 bg-secondary">
       <Image source={{uri:employerDetails?.avatar}} style={{ width: 80, height: 80 }} className='border-white border-4 rounded-full'/>
       <Text className="font-black">{employerDetails?.name}</Text>
-      <Text className="text-medium">{employerDetails?.email}</Text>
+      <Text className="text-medium">{employerDetails?.bio}</Text>
 
       <View className="flex-row bg-white rounded-3xl items-center gap-x-5 my-4 p-5"
         style={{

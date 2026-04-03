@@ -93,6 +93,7 @@ const handleFilter = (filter: string) => {
             payment={item.payment}
             cover_image_URL={item.cover_image_URL}
             category={item.category}
+            employer_rating={item.employer_rating}
             employer_name={item.employer?.user_name}
             employer_verified={item.employer?.is_verified}
             created_at={item.created_at}

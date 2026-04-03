@@ -50,7 +50,7 @@ export default function AddImageScreen() {
       {/* Upload Button */}
       {image && (
         <Animated.View entering={FadeIn.delay(300)} className="mt-6">
-          <RegisterButton title="Upload Image" onPress={() => uploadImage(`job/upload_image/${job_id}`)} />
+          <RegisterButton title="Upload Image" onPress={() =>{ uploadImage(`job/upload_image/${job_id}`); router.replace('/(tabs)/Home')}} />
         </Animated.View>
       )}
 

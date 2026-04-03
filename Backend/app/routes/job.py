@@ -7,7 +7,7 @@ from utils.job.upload import generate_embedding, upload_file
 from schema.job import JobCreate,JobUpdate, LikeRequest
 from schema.users import UserPublic
 from models.job import Job, JobLike
-from models import User
+from models.user import User,EmployerRating
 from db import SessionDep
 from utils.userUtills import get_current_user
 
@@ -122,6 +122,9 @@ def get_jobs(
     result = []
 
     for job, employer in rows:
+        average_rating = session.exec(
+            select(func.avg(EmployerRating.rating)).where(EmployerRating.employer_id == employer.id)
+        ).one()
         result.append({
             "id": job.id,
             "title": job.title,
@@ -132,6 +135,7 @@ def get_jobs(
             "category": job.category,
             "cover_image_URL": job.cover_image_URL,
             "created_at": job.created_at,
+            "employer_rating":average_rating,
             "employer": employer
         })
 

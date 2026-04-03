@@ -17,7 +17,7 @@ export interface CardProps{
     description:string
     created_at:string
     category?:string[]
-    employer_Rating?:number
+    employer_rating?:number
     payment:number
     employer_name?:string
     employer_verified?:boolean
@@ -33,7 +33,7 @@ const JobCard = ({
     description,
     created_at,
     category,
-    employer_Rating,
+    employer_rating,
     employer_name,
     payment,
     employer_verified,
@@ -69,7 +69,7 @@ const JobCard = ({
         </View>
         <View className='bg-white p-1 absolute flex flex-row w-10 top-2 left-2 rounded-md items-center gap-x-1'>
             <FontAwesome6 name='star' size={10} color={"#f3db07"} />
-            <Text className='text-xs font-black'>{!employer_Rating?"0":employer_Rating}</Text>
+            <Text className='text-xs font-black'>{!employer_rating?"0":employer_rating}</Text>
         </View>
          
         <View className='p-[0.3rem]'>
