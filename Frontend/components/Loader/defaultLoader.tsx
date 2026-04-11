@@ -1,5 +1,5 @@
 import React, { useEffect, useRef } from "react";
-import { View, Animated, Easing } from "react-native";
+import { View, Animated, Easing ,Text} from "react-native";
 
 const Bar = ({ delay }: { delay: number }) => {
   const height = useRef(new Animated.Value(32)).current;
@@ -41,12 +41,13 @@ const Bar = ({ delay }: { delay: number }) => {
 
 const DefaultLoader = () => {
   return (
-    <View className="absolute inset-0 justify-center items-center bg-black/20">
+    <View className="absolute inset-0 justify-center items-center bg-white">
       <View style={{ flexDirection: "row", alignItems: "flex-end" }}>
         <Bar delay={0} />
         <Bar delay={150} />
         <Bar delay={300} />
       </View>
+      <Text className="mt-2">Loading...</Text>
     </View>
   );
 };

@@ -119,7 +119,7 @@ const JobDetails = () => {
 
           {/* 👤 Employer */}
           <TouchableOpacity onPress={() => router.push({
-            pathname:'/pages/myJobs', //push to employer profile with employer id as params
+            pathname:"/pages/employerProfile", //push to employer profile with employer id as params
             params:{id:String(job?.employer.id)}
           })} className="mt-8 p-4 bg-gray-50 rounded-2xl">
             <Text className="font-bold text-lg mb-2">

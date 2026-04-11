@@ -10,6 +10,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { checkEmail, passwordCheck } from '@/components/utils/contraints';
 import Toast from '@/components/Toast';
 import apiClient from '../apiClient';
+import { useAuth } from '../context/AuthContext';
 
 const Login = () => {
   const [togglePassword, setTogglePassword] = useState(false)
@@ -18,6 +19,7 @@ const Login = () => {
   const [toastType, setToastType] = useState<'success'|'error'|'info'>('info')
   const [toastVisible, setToastVisible] = useState(false)
   const [toastMessage, setToastMessage] = useState('')
+  const {fetchUser} = useAuth()
 
   const authentictae_user = async () =>{
     try{
@@ -29,6 +31,7 @@ const Login = () => {
         
         // save token
         await SecureStore.setItemAsync("userToken", token)
+        await fetchUser()
 
         setToastMessage('SignUp successful!')
         setToastType('success')

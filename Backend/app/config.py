@@ -15,6 +15,9 @@ class Settings(BaseSettings):
     CLOUDINARY_API_SECRET:str = os.getenv('')
     CLOUD_NAME:str = os.getenv('')
     ALLOWED_EXTENSIONS:list[str] = os.getenv('')
+    NOTCH_PAY_URL:str = os.getenv('')
+    NOTCH_PAY_PUBLIC_KEY:str = os.getenv('')
+    NOTCH_PAY_SECRETE_KEY:str = os.getenv('')
 
     class Config:
         env_file = ".env"

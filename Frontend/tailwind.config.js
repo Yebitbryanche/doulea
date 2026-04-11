@@ -8,7 +8,7 @@ module.exports = {
       colors:{
         primary: "#2563EB",     // blue (trust, professional)
         secondary: "#EFF6FF",   // soft blue background
-        accent: "#10B981",      // green (success / hiring)
+        accent: "#fffbe0",      // green (success / hiring)
         dark: "#111827",        // text
         muted: "#6B7280"        // secondary text
       }

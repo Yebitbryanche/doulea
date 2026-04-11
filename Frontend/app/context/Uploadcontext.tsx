@@ -8,8 +8,8 @@ import { API_URL } from "../apiClient";
 interface UploadImageTypes{
     image: string | null
     loading:boolean
-    pickImage:() => Promise<void>
-    uploadImage:(endpoint:string) => Promise<void>
+    pickImage:() => Promise<string | null>
+    uploadImage:(endpoint:string,uri:string) => Promise<void>
     requestUpload:(imageURI: string, fileName: string, endpoint:string) => Promise<void>
     toastType:'success'|'error'|'info'
     toastVisible:boolean
@@ -36,24 +36,31 @@ const UploadImageContext = createContext<UploadImageTypes | undefined>(undefined
         })
 
         if (!result.canceled) {
-        setImage(result.assets[0].uri)
+            const uri = result.assets[0].uri
+            setImage(uri)
+            return uri
         }
+
+        return null
     }
 
     // upload image
-    const uploadImage = async (endpoint:string) => {
+    const uploadImage = async (endpoint:string,imageUri?: string) => {
+        const uri = imageUri || image;
+
+        if (!uri) {
+        setToastMessage('Please choose an image')
+        setToastType('error')
+        setToastVisible(true)
+        return
+        }
         try{
             setLoading(true)
-            if (!image) {
-            setToastMessage('Please choose an image')
-            setToastType('error')
-            setToastVisible(true)
-            return
-            }
 
-            const fileName = image.split("/").pop() || "cover.jpg"
 
-            await requestUpload(image, fileName, endpoint)
+            const fileName = uri.split("/").pop() || "cover.jpg"
+
+            await requestUpload(uri, fileName, endpoint)
 
             //router.replace("/(tabs)/Home")
         }

@@ -8,6 +8,7 @@ type User = {
   bio:string;
   address:string;
   phone:string;
+  role:boolean;
   user_name?: string;
   profile_URL?:string;
   is_verified:boolean;
@@ -15,6 +16,7 @@ type User = {
 
 type AuthContextType = {
   user: User | null;
+  setUser:React.Dispatch<React.SetStateAction<User | null>>; // fetch user for instan updates
   loading: boolean;
   fetchUser: () => Promise<void>;
   logout: () => Promise<void>;
@@ -57,7 +59,7 @@ export const AuthProvider = ({ children }: any) => {
   }, []);
 
   return (
-    <AuthContext.Provider value={{ user, loading, fetchUser, logout }}>
+    <AuthContext.Provider value={{ user, loading, fetchUser, logout, setUser }}>
       {children}
     </AuthContext.Provider>
   );

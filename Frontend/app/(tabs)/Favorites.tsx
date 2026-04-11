@@ -4,11 +4,11 @@ import { View, Text, ScrollView, TouchableOpacity } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useAuth } from "../context/AuthContext";
 import { JobDetailProps } from "@/types/other";
-import Feather from "@expo/vector-icons/Feather";
 import { Image } from "react-native";
 import { formatedDate } from "@/components/utils/contraints";
-import { Entypo, MaterialIcons, Ionicons } from "@expo/vector-icons";
-import LoadingScreen from "../constants/spinner";
+import { Entypo, Ionicons } from "@expo/vector-icons";
+import DefaultLoader from "@/components/Loader/defaultLoader";
+import images from "@/types/images";
 
 const Favorites = () => {
   const { user } = useAuth();
@@ -32,7 +32,7 @@ const Favorites = () => {
   }, []);
 
   return (
-    <SafeAreaView className="flex-1 bg-gray-100">
+    <SafeAreaView className="flex-1 bg-white">
       
       {/* 🔥 MODERN HEADER */}
       <View className="px-4 py-4 flex-row items-center justify-between bg-white">
@@ -60,7 +60,7 @@ const Favorites = () => {
       >
         {favs.length === 0 && !isLoading ? (
           <View className="flex-1 items-center justify-center mt-20">
-            <Ionicons name="heart-outline" size={60} color="#ccc" />
+            <Image source={images.favorites} className='w-[250px] h-[250px] flex self-center' resizeMode='contain'/>
             <Text className="text-gray-400 mt-4">
               No favorites yet
             </Text>
@@ -146,7 +146,7 @@ const Favorites = () => {
 
       {/* ⏳ LOADING */}
       {isLoading && (
-        <LoadingScreen/>
+        <DefaultLoader/>
       )}
     </SafeAreaView>
   );
