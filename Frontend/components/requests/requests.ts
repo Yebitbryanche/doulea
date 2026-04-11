@@ -3,7 +3,7 @@ import apiClient from "@/app/apiClient"
 export const getUserFav = async (user_id:string|undefined) => {
     try{
         const response  = await apiClient.get('/job/liked_jobs',{params:{user_id}})
-        console.log(response.data)
+        //console.log(response.data)
         return response.data
     }
     catch(error:any){
@@ -66,11 +66,94 @@ export const updateProfile = async (
             }
             
         )
-        console.log(response.data)
+        //console.log(response.data)
         return response
 
     }
     catch(error:any){
         console.error(error.message)
+    }
+}
+
+/////////////////////////////////////////
+// get employer posts by id
+////////////////////////////////////////
+
+export const getEmployer_jobs = async (id:string|undefined) => {
+    try{
+        const response = await apiClient.get(`/job/uploads/${id}`)
+        //console.log(response.data)
+        return response.data
+    }
+    catch(error:any){
+        console.error(error.message)
+    }
+}
+
+
+//// calling the endpoint to edit a particular job
+export const editJob = async (
+    id:string|string[],
+    title:string | undefined,
+    description:string | undefined,
+    payment:number | undefined,
+    location:string | undefined,
+    category:string[] | undefined
+        ) => {
+    try{
+        const response = await apiClient.put(`/job/update_job/${id}`,
+            {
+                title,
+                description,
+                payment,
+                location,
+                category
+            }
+        );
+        //console.log(response.data)
+        return response.data
+    }
+    catch(error:any){
+        console.error(error.message)
+    }
+}
+
+//delete listing
+
+export const deleteJob = async (id:string|undefined) => {
+    try{
+        const response = await apiClient.delete(`/job/delete/job/${id}`)
+        return response.data
+    }
+    catch(error:any){
+        console.error(error.message)
+    }
+}
+
+
+// payment request
+
+
+export const initiatePayment = async (id:string | undefined, amount:number) => {
+    try{ 
+        const response = await apiClient.post('/users/payments',{id,amount})
+        return response.data
+    }
+    catch(error:any){
+        console.error(error.response.data)
+        return null
+    }
+}
+
+// calling the webhook
+
+export const webhook = async (event:string, data:object) => {
+    try{
+    const response = await apiClient.post('/users/webhook/notchpay',{event,data})
+    console.log(response.data)
+    return(response.data)
+    }
+    catch(error:any){
+        console.error(error.response.data)
     }
 }

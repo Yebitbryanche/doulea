@@ -135,7 +135,7 @@ write_to_db()
                   style={{margin: 8,}}
                   value={role}
                   onValueChange={setRole}
-                  color={role ? '#235347' : undefined}
+                  color={role ? '#2563EB' : undefined}
                 />
                 <Text> Register as Employer</Text>
               </View> 

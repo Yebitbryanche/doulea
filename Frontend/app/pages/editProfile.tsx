@@ -12,7 +12,7 @@ import { router } from 'expo-router';
 import { useUpload } from '../context/Uploadcontext';
 
 const profile = () => {
-    const {user} = useAuth()
+    const {user,fetchUser} = useAuth()
     const [name,setName] = useState<string |undefined>(user?.user_name || "")
     const [email, setEmail] = useState<string |undefined>(user?.email || "");
     const [phone, setPhone] = useState<string | undefined>(user?.phone||'')
@@ -22,19 +22,20 @@ const profile = () => {
     const [message,setMessage] = useState('')
     const [type, setType] = useState<ToastType>()
     const [visible, setvisible] = useState(false)
-    const {image,uploadImage,pickImage,toastMessage,toastType,toastVisible} = useUpload()
+    const {uploadImage,pickImage,toastMessage,toastType,toastVisible} = useUpload()
 
     const handleUploadImage = async () => {
         try{
             setLoading(true)
-            await pickImage()
-            if(!image){
+            const selectedImage = await pickImage()
+            if(!selectedImage){
                 setMessage(toastMessage)
                 setType(toastType)
                 setvisible(toastVisible)
                 return;
             }
-            await uploadImage(`users/upload_avatar/${user?.id}`)
+            await uploadImage(`users/upload_avatar/${user?.id}`,selectedImage)
+            await fetchUser()
         }
         catch(error:any){
             console.error(error.message)
@@ -83,6 +84,7 @@ const profile = () => {
             setMessage('profile updated successfully');
             setType('success');
             setvisible(true);
+            await fetchUser()
 
         }
         catch(error:any){

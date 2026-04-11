@@ -1,11 +1,16 @@
-from fastapi import APIRouter, Depends, HTTPException, UploadFile, File
+import json
+
+from fastapi import APIRouter, Depends, HTTPException, UploadFile, File, Request
+from fastapi.responses import RedirectResponse
+import requests
+import uuid
 from sqlmodel import select, func
 from db import SessionDep
 from utils.job.upload import upload_file
-from models import User,EmployerRating
+from models import User,EmployerRating, Payment
 from models.job import Job
 from config import settings
-from schema.users import LoginRequest, ReviewModel, UserCreate, UserUpdate
+from schema.users import LoginRequest, MakePayment, NotchPayWebhook, ReviewModel, UserCreate, UserUpdate
 from utils.userUtills import hash_password, authenticate_user, create_access_token,get_current_user,send_document_email
 
 
@@ -105,6 +110,11 @@ async def upload_doc(
     )
 
     return {"status": "Document uploaded successfully"}
+
+#-----------------------------
+# upload verification document
+#-----------------------------
+
 
 @router.get("/me")
 def read_users_me(current_user: User = Depends(get_current_user)):
@@ -278,3 +288,118 @@ def get_employer_reviews(
             select(func.count()).where(EmployerRating.employer_id == user_id)
         ).one()
     }
+
+
+# -------------------------
+# make payment via notchpay
+# -------------------------
+
+@router.post('/payments/')
+def InitaitePayment(session:SessionDep, newPay:MakePayment):
+    user = session.exec(select(User).where(User.id == newPay.id)).first()
+    if not user:
+        raise HTTPException(
+            status_code=404,
+            detail="Uer does not exist"
+        )
+    if newPay.amount < 100:
+        raise HTTPException(
+            detail="forbidden",
+            status_code=403
+        )
+    url = settings.NOTCH_PAY_URL
+
+    # generate reference
+    reference = str(uuid.uuid4())
+
+    headers = {
+        "Authorization": settings.NOTCH_PAY_PUBLIC_KEY,
+        "Content-Type":"application/json"
+    }
+
+    payload = {
+        "amount": newPay.amount,
+        "currency": "XAF",
+        "customer": {
+            "name": user.user_name,
+            "email": user.email,
+            "phone": user.phone
+        },
+        "description": "Test Paymet",
+        "callback": "https://reactnative.dev",
+        "reference": reference
+    }
+
+    # calling notchpay api
+    response = requests.post(url, headers=headers, json=payload)
+
+    if response.status_code not in [201,200]:
+        raise HTTPException(status_code=400, detail="Payment Initiation failed")
+
+    data = response.json()
+
+    paymentData = Payment(
+        job_seeker_id=newPay.id,
+        amount = newPay.amount,
+        reference=reference,
+        status="pending"
+    )
+
+    session.add(paymentData)
+    session.commit()
+    session.refresh(paymentData)
+
+    return {
+        "message":"payment successfull",
+        "data":{
+            "summary":paymentData,
+            "data":data
+        }
+    }
+
+
+@router.post("/webhook/notchpay")
+async def notchpay_webhook(
+    payload: NotchPayWebhook,
+    session: SessionDep
+):
+    # 1. Extract data safely (already validated by Pydantic)
+    event = payload.event
+    reference = payload.data.reference
+
+    # 2. Handle only successful payment event
+    if event == "payment.complete":
+
+        payment = session.exec(
+            select(Payment).where(Payment.reference == reference)
+        ).first()
+
+        if not payment:
+            return {"status": "ignored - payment not found"}
+
+        if payment.status != "completed":
+            payment.status = "completed"
+            session.add(payment)
+            session.commit()
+
+            return {"status": "payment updated"}
+
+        return {"status": "already processed"}
+
+    return {"status": "ignored - unsupported event"}
+
+
+# @router.post("/webhook/notchpay")
+# async def notchpay_webhook(request: Request):
+
+#     body = await request.body()
+
+#     # ✅ 1. Handle empty body
+#     if not body:
+#         return {"status": "empty webhook ignored"}
+
+#     # ✅ 2. Try parse JSON safely
+#     try:
+#         payload = json.loads(body.decode("utf-8"))
+#     except Exception:
+#         return {"status": "invalid JSON received"}

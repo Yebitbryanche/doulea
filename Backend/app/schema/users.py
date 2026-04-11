@@ -35,3 +35,15 @@ class ReviewModel(SQLModel):
     review:str
     comment:str
     employer_id:str
+
+class MakePayment(SQLModel):
+    id:str
+    amount:int
+
+# webhook model
+class NotchPayData(BaseModel):
+    reference: str
+
+class NotchPayWebhook(BaseModel):
+    event: str
+    data: NotchPayData

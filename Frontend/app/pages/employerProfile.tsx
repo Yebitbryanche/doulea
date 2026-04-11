@@ -22,7 +22,7 @@ const myJobs = () => {
   const [totalreviews, setTotalReviews] = useState<number>(0)
   const [review, setReview] = useState('')
   const [comment, setComment] = useState("")
-  const {user} = useAuth()
+  const {user, fetchUser} = useAuth()
   const {id} = useLocalSearchParams();
 
   const commentArray = ["Poor","Average","Good","Excellent"]
@@ -40,6 +40,7 @@ const myJobs = () => {
       setLoading(true)
       const user_id = user?.id
       const response = await writeReview(user_id,rating, review, comment, id)
+      fetchUser()
     }
     catch(error:any){
       console.error(error.message)
@@ -204,6 +205,9 @@ const myJobs = () => {
       </TouchableOpacity>
 
       {/* SCROLLABLE CONTENT */}
+     { reviews.length === 0?
+     <View>
+      <Image source={images.no_reviews} className='w-[250px] h-[250px] flex self-center' resizeMode='contain'/><Text className='flex self-center'>No reviews yet</Text></View>: 
       <ScrollView showsVerticalScrollIndicator={false}>
         {reviews.map((item,index) => (
           <Review_card
@@ -215,7 +219,7 @@ const myJobs = () => {
           image={item.reviewer.avatar}
           />
         ))}
-      </ScrollView>
+      </ScrollView>}
 
     </View>
   </View>

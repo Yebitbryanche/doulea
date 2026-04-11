@@ -2,13 +2,15 @@ from typing import List
 
 from fastapi import APIRouter, Depends, HTTPException, UploadFile, File
 from config import settings
-from sqlmodel import func, select
+from sqlmodel import delete, func, select
 from utils.job.upload import generate_embedding, upload_file
 from schema.job import JobCreate,JobUpdate, LikeRequest
 from schema.users import UserPublic
 from models.job import Job, JobLike
 from models.user import User,EmployerRating
 from db import SessionDep
+import numpy as np
+from sklearn.metrics.pairwise import cosine_similarity
 from utils.userUtills import get_current_user
 
 router = APIRouter(
@@ -167,8 +169,10 @@ def getSingleJob(session:SessionDep, id:str):
         "employer":employer
     }
 
-
+#---------------------------------------
 #get favourite job for a particular user
+#---------------------------------------
+
 @router.get('/liked_jobs')
 def get_likedJobs(user_id:str, session:SessionDep):
     #user = session.exec(select(User).where(User.id == user_id)).first()
@@ -228,63 +232,231 @@ def UnlikeJob(user_id: str, job_id: str, session: SessionDep):
 
     return {"message":"job unliked successfully"}
 
-
+#------------------------------------------------------------
 # recommend user recommendations based on like and saved jobs
+#------------------------------------------------------------
 @router.get("/recommendations/{user_id}")
 def recommend_jobs(user_id: str, session: SessionDep):
 
+    # -----------------------------
+    # 1. Get liked jobs
+    # -----------------------------
     liked = session.exec(
         select(JobLike).where(JobLike.job_seeker_id == user_id)
     ).all()
 
-    # saved = session.exec(
-    #     select(SavedJob).where(SavedJob.job_seeker_id == user_id)
-    # ).all()
+    if not liked:
+        return session.exec(select(Job).limit(10)).all()
 
-    job_ids = [j.job_id for j in liked]
-
+    liked_jobs = []
     like_embeddings = []
+    liked_job_ids = []
 
     for j in liked:
         job = session.get(Job, j.job_id)
-        if job and job.embedding:
-            like_embeddings.append(job.embedding)
-
-    # for j in saved:
-    #     job = session.get(Job, j.job_id)
-    #     if job and job.embedding:
-    #         save_embeddings.append(job.embedding)
+        if job:
+            liked_jobs.append(job)
+            liked_job_ids.append(job.id)
+            if job.embedding:
+                like_embeddings.append(job.embedding)
 
     if not like_embeddings:
         return session.exec(select(Job).limit(10)).all()
 
-    import numpy as np
+    # -----------------------------
+    # 2. Build user vector
+    # -----------------------------
+    user_vector = np.mean(like_embeddings, axis=0)
 
-    user_vector = (
-        2 * np.mean(like_embeddings, axis=0)
-    ) / 3
+    # -----------------------------
+    # 3. Extract preferences
+    # -----------------------------
+    preferred_categories = set()
 
+    for job in liked_jobs:
+        if job.category:
+            if isinstance(job.category, list):
+                preferred_categories.update(job.category)  # flatten
+            else:
+                preferred_categories.add(job.category)
+
+    preferred_locations = set(
+        job.location for job in liked_jobs if job.location
+    )
+
+    # -----------------------------
+    # 4. Get all jobs
+    # -----------------------------
     all_jobs = session.exec(select(Job)).all()
 
-    from sklearn.metrics.pairwise import cosine_similarity
+    filtered_jobs = [job for job in all_jobs if job.embedding]
 
-    job_vectors = [job.embedding for job in all_jobs if job.embedding]
+    if not filtered_jobs:
+        return session.exec(select(Job).limit(10)).all()
+
+    job_vectors = [job.embedding for job in filtered_jobs]
 
     similarities = cosine_similarity([user_vector], job_vectors)[0]
 
-    ranked = np.argsort(similarities)[::-1]
+    # -----------------------------
+    # 5. Get employer ratings (OPTIMIZED)
+    # -----------------------------
+    employer_ids = list(set(job.employer_id for job in filtered_jobs))
+
+    ratings_data = session.exec(
+        select(
+            EmployerRating.employer_id,
+            func.avg(EmployerRating.rating)
+        )
+        .where(EmployerRating.employer_id.in_(employer_ids))
+        .group_by(EmployerRating.employer_id)
+    ).all()
+
+    employer_avg_map = {
+        emp_id: float(avg)
+        for emp_id, avg in ratings_data
+    }
+
+    # -----------------------------
+    # 5B. Fetch employers (OPTIMIZED)
+    # -----------------------------
+    employer_ids = list(set(job.employer_id for job in filtered_jobs))
+
+    employers = session.exec(
+        select(User).where(User.id.in_(employer_ids))
+    ).all()
+
+    employer_map = {emp.id: emp for emp in employers}
+
+    # -----------------------------
+    # 6. Learn user rating preference
+    # -----------------------------
+    liked_employer_ratings = []
+
+    for job in liked_jobs:
+        avg = employer_avg_map.get(job.employer_id)
+        if avg:
+            liked_employer_ratings.append(avg)
+
+    avg_rating_preference = (
+        sum(liked_employer_ratings) / len(liked_employer_ratings)
+        if liked_employer_ratings else 0
+    )
+
+    # -----------------------------
+    # 7. Score jobs
+    # -----------------------------
+    scored_jobs = []
+
+    for idx, job in enumerate(filtered_jobs):
+
+        if job.id in liked_job_ids:
+            continue  # skip already liked
+
+        score = similarities[idx]
+
+        # -------- CATEGORY BOOST --------
+        # CATEGORY BOOST
+        if job.category:
+            if isinstance(job.category, list):
+                if any(cat in preferred_categories for cat in job.category):
+                    score += 0.2
+            else:
+                if job.category in preferred_categories:
+                    score += 0.2
+
+        # -------- LOCATION BOOST --------
+        if job.location in preferred_locations:
+            score += 0.2
+
+        # -------- EMPLOYER RATING BOOST --------
+        avg_rating = employer_avg_map.get(job.employer_id)
+
+        if avg_rating:
+            # Smooth scaling (better than hard threshold)
+            score += (avg_rating / 5) * 0.3
+
+            # Optional strict preference enforcement
+            if avg_rating < avg_rating_preference:
+                score -= 0.1
+
+        scored_jobs.append((job, score))
+
+    # -----------------------------
+    # 8. Sort & return
+    # -----------------------------
+    scored_jobs.sort(key=lambda x: x[1], reverse=True)
 
     recommended = []
-    seen_ids = set(job_ids)
 
-    for i in ranked:
-        job = all_jobs[i]
+    for job, score in scored_jobs[:10]:
 
-        if job.id not in seen_ids:
-            recommended.append(job)
+        employer = employer_map.get(job.employer_id)
+        avg_rating = employer_avg_map.get(job.employer_id)
 
-        if len(recommended) == 10:
-            break
+        recommended.append({
+            "job": {
+                "id": job.id,
+                "title": job.title,
+                "description": job.description,
+                "category": job.category,
+                "location": job.location,
+                "created_at": job.created_at,
+            },
+            "employer": {
+                "id": employer.id if employer else None,
+                "name": employer.user_name if employer else None,
+                "email": employer.email if employer else None,
+                "avatar": getattr(employer, "avatar", None),  # optional
+            },
+            "employer_rating": avg_rating,
+            "score": float(score)  # useful for debugging / tuning
+        })
 
     return recommended
-    
+
+
+#------------------------------------
+# get post for a particular employer
+#------------------------------------
+
+@router.get('/uploads/{user_id}')
+def get_uploads_by_id(user_id:str, session:SessionDep):
+    query = select(User).where(User.id == user_id)
+    user = session.exec(query).first()
+
+    if not user:
+        raise HTTPException(
+            status_code=404,
+            detail="user not found"
+        )
+    jobquery = select(Job).where(Job.employer_id == user_id)
+    job = session.exec(jobquery).all()
+
+    return job
+
+
+
+@router.delete('/delete/job/{job_id}')
+def delete_job(job_id: str, session: SessionDep):
+
+    job = session.get(Job, job_id)
+
+    if not job:
+        raise HTTPException(status_code=404, detail='job not found')
+
+    # -----------------------------
+    # DELETE DEPENDENCIES FIRST
+    # -----------------------------
+    session.exec(
+        delete(JobLike).where(JobLike.job_id == job_id)
+    )
+
+
+    # -----------------------------
+    # DELETE JOB
+    # -----------------------------
+    session.delete(job)
+    session.commit()
+
+    return {"message": "delete successful"}

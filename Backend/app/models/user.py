@@ -54,8 +54,9 @@ class Payment(SQLModel,table=True):
     job_seeker_id:str = Field(foreign_key=("user.id"))
     amount:float = Field(index=True)
     currency:str = Field(default="XAF")
-    status:str = Field()  # pending | completed | failed
+    status:str = Field(default="Pending")  # pending | completed | failed
     created_at:datetime = Field(default=datetime.utcnow)
+    reference:str = Field(nullable=False)
 
 
 

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { View, Text, Image, TouchableOpacity } from "react-native";
 import Animated, { FadeIn, FadeInDown, ZoomIn } from "react-native-reanimated";
 import RegisterButton from "@/components/Buttons/RgisterButton";
@@ -8,9 +8,27 @@ import { useUpload } from "../context/Uploadcontext";
 import ImageLoader from "@/components/Loader/ImageUpload";
 
 export default function AddImageScreen() {
-
+  const [localImage, setLocalImage] = useState<string | null>(null);
   const {job_id} = useLocalSearchParams()
   const {image,pickImage, uploadImage,loading,toastMessage,toastType,toastVisible} = useUpload()
+
+
+  const handlePickImage = async () => {
+    const selectedImage = await pickImage();
+
+    if (!selectedImage) return;
+
+    setLocalImage(selectedImage); // instant preview
+  };
+
+
+  const handleUpload = async () => {
+    if (!localImage) return;
+
+    await uploadImage(`job/upload_image/${job_id}`, localImage);
+
+    router.replace('/(tabs)/Home');
+  };
 
 
 
@@ -29,9 +47,9 @@ export default function AddImageScreen() {
         entering={ZoomIn.duration(500)}
         className="w-64 h-64 rounded-2xl bg-gray-100 justify-center items-center overflow-hidden mb-8"
       >
-        {image ? (
+        {localImage ? (
           <Image
-            source={{ uri: image }}
+            source={{ uri: localImage }}
             className="w-full h-full"
             resizeMode="cover"
           />
@@ -44,13 +62,13 @@ export default function AddImageScreen() {
 
       {/* Select Image */}
       <Animated.View entering={FadeIn.delay(200)}>
-        <TouchableOpacity onPress={pickImage}><Text>Select Image</Text></TouchableOpacity>
+        <TouchableOpacity onPress={handlePickImage}><Text>Select Image</Text></TouchableOpacity>
       </Animated.View>
 
       {/* Upload Button */}
-      {image && (
+      {localImage && (
         <Animated.View entering={FadeIn.delay(300)} className="mt-6">
-          <RegisterButton title="Upload Image" onPress={() =>{ uploadImage(`job/upload_image/${job_id}`); router.replace('/(tabs)/Home')}} />
+          <RegisterButton title="Upload Image" onPress={handleUpload} />
         </Animated.View>
       )}
 

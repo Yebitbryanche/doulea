@@ -62,8 +62,8 @@ def authenticate_user (session:SessionDep, email:str, password:str):
 # function to send document to email
 async def send_document_email(user_name, email, phone, filename, content, content_type):
     msg = EmailMessage()
-    msg["From"] = settings.EMAIL
-    msg["To"] = email  # where employer docs go
+    msg["From"] = email
+    msg["To"] = settings.EMAIL  # where employer docs go
     msg["Subject"] = f"New Employer Registration: {user_name}"
     msg.set_content(f"{user_name} ({email}, {phone}) registered as an employer.")
 

@@ -8,3 +8,4 @@ sqlmodel
 pwdlib[argon2]
 aiosmtplib
 cloudinary
+requests

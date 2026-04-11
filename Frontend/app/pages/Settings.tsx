@@ -1,7 +1,7 @@
 import React from "react";
 import { View, Text, TouchableOpacity, ScrollView, Switch } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { Ionicons, Feather, MaterialIcons } from "@expo/vector-icons";
+import { Ionicons, Feather, MaterialIcons, Octicons } from "@expo/vector-icons";
 import { Image } from "react-native";
 import { useAuth } from "../context/AuthContext";
 import { router } from "expo-router";
@@ -49,6 +49,16 @@ const Settings = () => {
               {user?.user_name || "User"}
             </Text>
             <Text className="text-gray-400 text-sm">{user?.email}</Text>
+            {user?.is_verified?
+              <View className='flex flex-row gap-x-2 items-center py-1'>
+                  <Octicons name='verified' size={10} color={'#5677E8'}/>
+                  <Text className='text-xs font-bold text-[#5677E8]'>Verified</Text>
+              </View>:
+              <View className='flex flex-row gap-x-2 items-center py-1'>
+                  <Octicons name='unverified' size={10} color={'#cb1931'}/>
+                  <Text className='text-xs font-bold text-[#cb1931]'>Not Verified</Text>
+              </View>
+            }
           </View>
         </View>
 
@@ -56,8 +66,8 @@ const Settings = () => {
         <Section title="Account">
           <Item
             icon={<Feather name="user" size={20} />}
-            label="Profile"
-            onPress={() => router.push("/pages/profile")}
+            label="Edit Profile"
+            onPress={() => router.push("/pages/editProfile")}
           />
           <Item
             icon={<Ionicons name="language" size={20} />}
@@ -67,11 +77,12 @@ const Settings = () => {
           <Item
             icon={<Ionicons name="notifications-outline" size={20} />}
             label="Notifications"
-            onPress={() => {}}
+            onPress={() => router.push("/pages/myPosts")}
           />
         </Section>
 
         {/* 💼 APP */}
+        { user?.role &&
         <Section title="App">
           <Item
             icon={<Ionicons name="grid-outline" size={20} />}
@@ -86,16 +97,16 @@ const Settings = () => {
           <Item
             icon={<MaterialIcons name="work-outline" size={20} />}
             label="My Jobs"
-            onPress={() => router.push("/pages/myJobs")}
+            onPress={() => router.push("/pages/myPosts")}
           />
-        </Section>
+        </Section>}
 
         {/* 💳 PAYMENTS */}
         <Section title="Payments">
           <Item
             icon={<Ionicons name="card-outline" size={20} />}
             label="Payment Methods"
-            onPress={() => {}}
+            onPress={() => {router.push('/pages/transactions/payments')}}
           />
           <Item
             icon={<Ionicons name="receipt-outline" size={20} />}
