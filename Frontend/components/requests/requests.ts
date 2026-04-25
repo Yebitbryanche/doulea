@@ -145,15 +145,4 @@ export const initiatePayment = async (id:string | undefined, amount:number) => {
     }
 }
 
-// calling the webhook
 
-export const webhook = async (event:string, data:object) => {
-    try{
-    const response = await apiClient.post('/users/webhook/notchpay',{event,data})
-    console.log(response.data)
-    return(response.data)
-    }
-    catch(error:any){
-        console.error(error.response.data)
-    }
-}

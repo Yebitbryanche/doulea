@@ -20,7 +20,7 @@ class User(SQLModel,table=True):
     is_verified:bool = Field(default=False)
     role:bool = Field(default=False)
     bio:str = Field(index=True, nullable=True)
-
+    has_paid:bool = Field(default = False)
     jobs: list["Job"] = Relationship(back_populates="employer")
 
 
@@ -55,7 +55,7 @@ class Payment(SQLModel,table=True):
     amount:float = Field(index=True)
     currency:str = Field(default="XAF")
     status:str = Field(default="Pending")  # pending | completed | failed
-    created_at:datetime = Field(default=datetime.utcnow)
+    created_at:datetime = Field(default_factory=datetime.utcnow)
     reference:str = Field(nullable=False)
 
 

@@ -8,15 +8,22 @@ import {
   TextInput,
   ScrollView,
   Modal,
+  Image,
+  Dimensions
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import apiClient from "../apiClient";
 import { router } from "expo-router";
 import Toast from "@/components/Toast";
 import { Ionicons } from "@expo/vector-icons";
+import { useAuth } from "../context/AuthContext";
+import images from "@/types/images";
+
 
 const Uploads = () => {
   const [title, setTitle] = useState("");
+  const {user} = useAuth()
+  const {width, height} = Dimensions.get("window")
   const [description, setDescription] = useState("");
   const [location, setLocation] = useState("");
   const [payment, setPayment] = useState("");
@@ -79,7 +86,7 @@ const Uploads = () => {
         style={{ flex: 1 }}
         behavior={Platform.OS === "ios" ? "padding" : "height"}
       >
-        <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingBottom: 120 }}>
+        {user?.role ?<ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingBottom: 120 }}>
           
           {/* 🔥 HEADER */}
           <View className="px-5 py-4 bg-white mx-4 rounded-md">
@@ -151,15 +158,22 @@ const Uploads = () => {
               )}
             </TouchableOpacity>
           </View>
-        </ScrollView>
+          </ScrollView>:
+          <View style={{height:height*1}} className="bg-white">
+            <View style={{paddingTop:height*0.1}}>
+              <Image source={images.soscer} style={{width:width*1, height:height*0.3}} resizeMode="contain"/>
+            </View>
+            <Text className="flex self-center text-md font-bold text-muted">Sign up as an employer to upload Jobs</Text>
+          </View>
+        }
 
         {/* 🚀 STICKY BUTTON */}
         <View className="absolute bottom-0 w-full bg-white px-5 py-4 border-t border-gray-200">
           <TouchableOpacity
-            onPress={handleUpload}
+            onPress={ user?.role?handleUpload: () => router.push('/Auth/Register')}
             className="bg-primary py-4 rounded-xl items-center"
           >
-            <Text className="text-white font-bold text-lg">Continue</Text>
+            <Text className="text-white font-bold text-lg">{user?.role?"Continue":"Register as Employer"}</Text>
           </TouchableOpacity>
         </View>
 

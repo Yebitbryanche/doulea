@@ -12,6 +12,7 @@ type User = {
   user_name?: string;
   profile_URL?:string;
   is_verified:boolean;
+  has_paid:boolean;
 };
 
 type AuthContextType = {

@@ -14,13 +14,15 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import Entypo from "@expo/vector-icons/Entypo";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 import FontAwesome6 from "@expo/vector-icons/FontAwesome6";
-import { formatPrice, timeAgo } from "@/components/utils/contraints";
-import images from "@/types/images";
+import { timeAgo } from "@/components/utils/contraints";
+import { useAuth } from "@/app/context/AuthContext";
+
 
 const { height } = Dimensions.get("window");
 
 const JobDetails = () => {
   const { id } = useLocalSearchParams();
+  const {user} = useAuth()
   const [job, setJob] = useState<DetailProp>();
   const [category, setCategory] = useState<string[]>([]);
 
@@ -118,16 +120,46 @@ const JobDetails = () => {
           </View>
 
           {/* 👤 Employer */}
-          <TouchableOpacity onPress={() => router.push({
-            pathname:"/pages/employerProfile", //push to employer profile with employer id as params
-            params:{id:String(job?.employer.id)}
-          })} className="mt-8 p-4 bg-gray-50 rounded-2xl">
+          <TouchableOpacity
+            onPress={((job?.job.payment ?? 0) < 20000 || user?.has_paid) ?() =>
+              router.push({
+                pathname: "/pages/employerProfile",
+                params: { id: String(job?.employer.id) },
+              }):() => router.push('/pages/transactions/payments')
+            }
+            className="mt-8 p-4 bg-gray-50 rounded-2xl"
+          >
             <Text className="font-bold text-lg mb-2">
               {job?.employer.user_name}
             </Text>
 
-            <Text className="text-gray-600">{job?.employer.email}</Text>
-            <Text className="text-gray-600">{job?.employer.phone}</Text>
+            {((job?.job.payment ?? 0) < 20000 || user?.has_paid) ? (
+              <>
+                <Text className="text-gray-600">
+                  {job?.employer.email}
+                </Text>
+
+                <Text className="text-gray-600">
+                  {job?.employer.phone}
+                </Text>
+              </>
+            ) : (
+              <>
+                <Text className="text-gray-600 font-black">
+                  {"********" +
+                    job?.employer.email.slice(
+                      job?.employer.email.length - 10
+                    )}
+                </Text>
+
+                <Text className="text-gray-600 font-black">
+                  {"+237 ****" +
+                    job?.employer.phone.slice(
+                      job?.employer.phone.length - 4
+                    )}
+                </Text>
+              </>
+            )}
           </TouchableOpacity>
         </View>
       </ScrollView>
