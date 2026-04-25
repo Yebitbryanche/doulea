@@ -104,7 +104,7 @@ const profile = () => {
                 <Feather name='chevron-left' size={23} className='absolute left-2 top-4' onPress={() => router.back()}/>
                 <Text className='font-bold text-2xl'>Edit Profile</Text>
                 <View className='mt-[3rem]'>
-                    <Image className="w-[100px] h-[100px] rounded-full" source={user?.profile_URL?{uri:user?.profile_URL}:require('../../assets/images/favicon.png')}  resizeMode={'contain'}/>
+                    <Image className="w-[100px] h-[100px] rounded-full" source={user?.profile_URL?{uri:user?.profile_URL}:require('@/assets/images/default_profile.jpg')}  resizeMode={'contain'}/>
                     <TouchableOpacity  onPress={() => handleUploadImage()} className='absolute bottom-0 right-0 bg-primary border-2 border-white p-2 rounded-full'>
                         <Feather 
                             name='camera' size={20} color={"white"}/>

@@ -121,7 +121,7 @@ write_to_db()
             <RegistrationHeader text='Get Started!'/>
             <View className='my-[2rem] flex flex-col gap-y-5'>
                 <InputField label='Full Name' placeholder='John Doe' keyboardType='default' onChange={setUserName} value={user_name}/>
-                <InputField label='Email' placeholder='examplemail@gmail.com' keyboardType='default' onChange={setEmail} value={email}/>
+                <InputField label='Email' placeholder='examplemail@gmail.com' keyboardType='default' onChange={setEmail} value={email.trim()}/>
                 <InputField label='Password' secureText={true} keyboardType='default' 
                   showPassword={toggleShowPassword}
                   onToggle={() => setToggleShowPassword(!toggleShowPassword)}

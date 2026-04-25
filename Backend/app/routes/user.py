@@ -357,49 +357,77 @@ def InitaitePayment(session:SessionDep, newPay:MakePayment):
         }
     }
 
+##webhook for payment
+# @router.post("/webhook/notchpay")
+# async def notchpay_webhook(
+#     payload: NotchPayWebhook,
+#     session: SessionDep
+# ):
+#     print("Webhook hit")
+#     print(payload)
+#     # 1. Extract data safely (already validated by Pydantic)
+#     event = payload.event
+#     reference = payload.data.reference
+
+#     # 2. Handle only successful payment event
+#     if event == "payment.complete":
+
+#         payment = session.exec(
+#             select(Payment).where(Payment.reference == reference)
+#         ).first()
+
+#         if not payment:
+#             return {"status": "ignored - payment not found"}
+
+#         if payment.status != "completed":
+#             payment.status = "completed"
+#             session.add(payment)
+#             session.commit()
+
+#             return {"status": "payment updated"}
+
+#         return {"status": "already processed"}
+
+#     return {"status": "ignored - unsupported event"}
+
+
 
 @router.post("/webhook/notchpay")
-async def notchpay_webhook(
-    payload: NotchPayWebhook,
-    session: SessionDep
-):
-    # 1. Extract data safely (already validated by Pydantic)
-    event = payload.event
-    reference = payload.data.reference
+async def notchpay_webhook(request: Request, session: SessionDep):
+    payload = await request.json()
 
-    # 2. Handle only successful payment event
+    print("Webhook received:", payload)
+
+    event = payload.get("event")
+    reference = payload.get("data", {}).get("merchant_reference")
+
     if event == "payment.complete":
-
         payment = session.exec(
             select(Payment).where(Payment.reference == reference)
         ).first()
-
+        
         if not payment:
             return {"status": "ignored - payment not found"}
 
         if payment.status != "completed":
             payment.status = "completed"
             session.add(payment)
+           
+
+            user = session.exec(select(User).where(User.id == payment.job_seeker_id)).first()
+            if user:
+                user.has_paid = True
+                session.add(user)
+                
             session.commit()
 
             return {"status": "payment updated"}
 
         return {"status": "already processed"}
 
-    return {"status": "ignored - unsupported event"}
+    return {
+        "status": f"ignored - event was {event}"
+    }
 
 
-# @router.post("/webhook/notchpay")
-# async def notchpay_webhook(request: Request):
 
-#     body = await request.body()
-
-#     # ✅ 1. Handle empty body
-#     if not body:
-#         return {"status": "empty webhook ignored"}
-
-#     # ✅ 2. Try parse JSON safely
-#     try:
-#         payload = json.loads(body.decode("utf-8"))
-#     except Exception:
-#         return {"status": "invalid JSON received"}

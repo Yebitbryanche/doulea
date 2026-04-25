@@ -7,6 +7,7 @@ import no_task from "../assets/images/no-task.png"
 import no_reviews from "../assets/images/no reviews.png"
 import myposts from "../assets/images/no personal posts.png"
 import favorites from "../assets/images/favorites.png"
+import soscer from "@/assets/images/upload files.png"
 
 export default{
     shuteye,
@@ -17,5 +18,6 @@ export default{
     no_task,
     no_reviews,
     myposts,
-    favorites
+    favorites,
+    soscer,
 }

@@ -91,7 +91,7 @@ const Login = () => {
           <View className='flex flex-col items-center'>
           <RegistrationHeader text='Welcome Back'/>
           <View className='py-[2rem] flex flex-col gap-y-[2rem]'>
-              <InputField label='Email' placeholder='example@gmail.com' value={email} onChange={setEmail}/>
+              <InputField label='Email' placeholder='example@gmail.com' value={email.trim()} onChange={setEmail}/>
               <InputField label='Password' 
               showPassword={togglePassword} 
               onToggle={() => setTogglePassword(!togglePassword)} 

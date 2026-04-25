@@ -41,7 +41,7 @@ const Settings = () => {
             source={
               user?.profile_URL
                 ? { uri: user.profile_URL }
-                : require("../../assets/images/mailbox.png")
+                : require("@/assets/images/default_profile.jpg")
             }
           />
           <View>
