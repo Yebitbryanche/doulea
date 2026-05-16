@@ -11,6 +11,8 @@ import { checkEmail, passwordCheck } from '@/components/utils/contraints';
 import Toast from '@/components/Toast';
 import apiClient from '../apiClient';
 import { useAuth } from '../context/AuthContext';
+import DefaultLoader from '@/components/Loader/defaultLoader';
+import { useTranslation } from 'react-i18next';
 
 const Login = () => {
   const [togglePassword, setTogglePassword] = useState(false)
@@ -19,7 +21,8 @@ const Login = () => {
   const [toastType, setToastType] = useState<'success'|'error'|'info'>('info')
   const [toastVisible, setToastVisible] = useState(false)
   const [toastMessage, setToastMessage] = useState('')
-  const {fetchUser} = useAuth()
+  const {fetchUser, loading} = useAuth()
+  const {t} = useTranslation()
 
   const authentictae_user = async () =>{
     try{
@@ -33,7 +36,7 @@ const Login = () => {
         await SecureStore.setItemAsync("userToken", token)
         await fetchUser()
 
-        setToastMessage('SignUp successful!')
+        setToastMessage(`${t('SignUp successful')}`)
         setToastType('success')
         setToastVisible(true)
       
@@ -46,6 +49,10 @@ const Login = () => {
     }
     catch(error:any){
       console.log(error.response.data)
+      setToastMessage(error.response.data.detail)
+      setToastType('error')
+      setToastVisible(true)
+      return
     }
   }
 
@@ -64,15 +71,17 @@ const Login = () => {
       return
     }
 
+    
+
     if(!checkEmail(email)){
-      setToastMessage('Invalid Email please check and try again! avoid spaces as well')
+      setToastMessage(`${t('Invalid Email! pleas check and try again avoid spaces as well')}`)
       setToastType('error')
       setToastVisible(true)
       return
     }
 
     if(!passwordCheck(password)){
-      setToastMessage('Password is weak, try adding numbers and Special Characters')
+      setToastMessage(`${t('Password is weak, try adding numbers and Special Characters')}`)
       setToastType('error')
       setToastVisible(true)
       return
@@ -89,10 +98,10 @@ const Login = () => {
       >
         <ScrollView>
           <View className='flex flex-col items-center'>
-          <RegistrationHeader text='Welcome Back'/>
+          <RegistrationHeader text={t('welcome back')}/>
           <View className='py-[2rem] flex flex-col gap-y-[2rem]'>
-              <InputField label='Email' placeholder='example@gmail.com' value={email.trim()} onChange={setEmail}/>
-              <InputField label='Password' 
+              <InputField label={t('email')} placeholder='example@gmail.com' value={email.trim()} onChange={setEmail}/>
+              <InputField label={t('password')} 
               showPassword={togglePassword} 
               onToggle={() => setTogglePassword(!togglePassword)} 
               onChange={setPassword}
@@ -101,12 +110,13 @@ const Login = () => {
               secureText={true}/>
           </View>
           <View className='mt-[2rem]'>
-            <RegisterButton title='Login' onPress={handle_Login}/>
+            <RegisterButton title={t('Login')} onPress={handle_Login}/>
           </View>
-          <Link href={'/Auth/Register'} className='py-[2rem] text-primary'>Create account instead</Link>
+          <Link href={'/Auth/Register'} className='py-[2rem] text-primary'>{t("Create account instead")}</Link>
           </View>
         </ScrollView>
       </KeyboardAvoidingView>
+      {loading && <DefaultLoader/>}
       <Toast 
       visible={toastVisible}
       type={toastType}

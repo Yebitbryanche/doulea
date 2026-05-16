@@ -8,6 +8,7 @@ export const getUserFav = async (user_id:string|undefined) => {
     }
     catch(error:any){
         console.error(error.response.data)
+        throw error
     }
 }
 
@@ -130,9 +131,11 @@ export const deleteJob = async (id:string|undefined) => {
     }
 }
 
-
+//---------------------------------------
 // payment request
+//---------------------------------------
 
+// initiat e payment
 
 export const initiatePayment = async (id:string | undefined, amount:number) => {
     try{ 
@@ -144,5 +147,21 @@ export const initiatePayment = async (id:string | undefined, amount:number) => {
         return null
     }
 }
+
+// get transaction details
+
+export const getTransactionDetails = async (id:string |undefined) => {
+    try{
+        const response = await apiClient.get(`/users/transactions/${id}`)
+        console.log(response.data)
+        return response.data
+    }
+    catch(error:any){
+        console.error(error.response.data)
+        return null
+    }
+}
+
+
 
 

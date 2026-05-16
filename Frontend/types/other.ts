@@ -46,3 +46,10 @@ export interface Employer{
     email:string
     name:string
 }
+
+export interface TransactionTypes {
+    amount:number;
+    status:"completed" | "pending" | "failed";
+    created_at:string;
+    reference:string
+}

@@ -11,6 +11,7 @@ import { router } from 'expo-router';
 import { useAuth } from '../context/AuthContext';
 import { useLike } from '../context/LikeContext';
 import images from '@/types/images';
+import DefaultLoader from '@/components/Loader/defaultLoader';
 
 
 const Home = () => {
@@ -24,36 +25,65 @@ const Home = () => {
     const {user} = useAuth()
     const LIMIT = 10;
     const filters = ["Recent", 'Near by',"Popular","Recommended"]
+    const [activeFilter, setActiveFilter] = useState("Recent")
 
 
-const handleFilter = (filter: string) => {
-  let updatedJobs = [...jobs]
+const handleFilter = async (filter: string) => {
+  setActiveFilter(filter)
 
+  // Recent
   if (filter === "Recent") {
-    updatedJobs.sort(
+    const updatedJobs = [...jobs].sort(
       (a, b) =>
         new Date(b.created_at).getTime() -
         new Date(a.created_at).getTime()
     )
+
+    setFilteredJobs(updatedJobs)
+    return
   }
 
+  // Popular
   // if (filter === "Popular") {
-  //   updatedJobs.sort((a, b) => (b.likes ?? 0) - (a.likes ?? 0))
-  // }
-
-  // if (filter === "Recommended") {
-  //   updatedJobs = updatedJobs.filter(
-  //     (job) => job.category?.includes("Technology")
+  //   const updatedJobs = [...jobs].sort(
+  //     (a, b) => (b.likes ?? 0) - (a.likes ?? 0)
   //   )
+
+  //   setFilteredJobs(updatedJobs)
+  //   return
   // }
 
-  // if (filter === "Near by") {
-  //   updatedJobs = updatedJobs.filter(
-  //     (job) => job.location?.toLowerCase().includes("douala")
-  //   )
-  // }
+  // Near by
+  if (filter === "Near by") {
+    const updatedJobs = jobs.filter((job) =>
+      user?.address?
+      job.location?.toLowerCase().includes(user.address.toLocaleLowerCase()):
+      null
+    )
 
-  setFilteredJobs(updatedJobs)
+    setFilteredJobs(updatedJobs)
+    return
+  }
+
+  // Recommended
+  if (filter === "Recommended") {
+    try {
+      setLoading(true)
+
+      const response = await apiClient.get(
+        `/job/recommendations/${user?.id}`
+      )
+
+      console.log(response.data)
+      setFilteredJobs(response.data)
+    } catch (error) {
+      console.log(error)
+    } finally {
+      setLoading(false)
+    }
+
+    return
+  }
 }
 
 
@@ -87,6 +117,7 @@ const handleFilter = (filter: string) => {
           })
         }}>
           <JobCard
+            key={item.id}
             id={item.id}
             title={item.title}
             description={item.description}
@@ -164,19 +195,24 @@ const getJobs = async () => {
         <FlatList
         contentContainerStyle={{display:"flex", gap:30, padding:10}}
         data={filters}
-        renderItem={({item}) =><TouchableOpacity onPress={() => handleFilter(item)}><Text className='text-primary font-bold'>{item}</Text></TouchableOpacity>}
+        renderItem={({item}) =>
+          <TouchableOpacity onPress={() => handleFilter(item)}>
+            <Text
+              className={`font-bold pb-1 ${
+                activeFilter === item
+                  ? "text-primary border-b-2 border-primary"
+                  : "text-gray-400"
+              }`}
+            >
+              {item}
+            </Text>
+          </TouchableOpacity>}
         horizontal
         showsHorizontalScrollIndicator={false}/>
         
       </View>
-
+{/**Rendered listings */}
       <View className=' flex flex-col items-center'>
-        {filteredJobs.length === 0?
-        <View className='mt-10 flex fleex-col items-center'>
-          <Image source={images.no_task} style={{width:200, height:200}}/>
-          <Text className='font-bold text-xl text-muted'>No Listings Found </Text>
-          <Text className='text-md text-gray-400'>please check your internet connectiion</Text>
-        </View>:
         <FlatList
         data={filteredJobs}
         keyExtractor={(item) => item.id}
@@ -184,6 +220,13 @@ const getJobs = async () => {
         renderItem={renderItem}
         onEndReached={getJobs}
         onEndReachedThreshold={0.5}
+        ListEmptyComponent={
+          <View className='mt-10 flex fleex-col items-center'>
+            <Image source={images.no_task} style={{width:200, height:200}}/>
+            <Text className='font-bold text-xl text-muted'>No Listings Found </Text>
+            <Text className='text-md text-gray-400'>please check your internet connectiion</Text>
+        </View>
+        }
 
         ListFooterComponent={
           loading ? (
@@ -195,11 +238,11 @@ const getJobs = async () => {
           ) : null
         }
         />
-        }
       </View>
       <View>
 
       </View>
+      {loading && <DefaultLoader/>}
     </SafeAreaView>
   );
 }

@@ -357,40 +357,9 @@ def InitaitePayment(session:SessionDep, newPay:MakePayment):
         }
     }
 
-##webhook for payment
-# @router.post("/webhook/notchpay")
-# async def notchpay_webhook(
-#     payload: NotchPayWebhook,
-#     session: SessionDep
-# ):
-#     print("Webhook hit")
-#     print(payload)
-#     # 1. Extract data safely (already validated by Pydantic)
-#     event = payload.event
-#     reference = payload.data.reference
-
-#     # 2. Handle only successful payment event
-#     if event == "payment.complete":
-
-#         payment = session.exec(
-#             select(Payment).where(Payment.reference == reference)
-#         ).first()
-
-#         if not payment:
-#             return {"status": "ignored - payment not found"}
-
-#         if payment.status != "completed":
-#             payment.status = "completed"
-#             session.add(payment)
-#             session.commit()
-
-#             return {"status": "payment updated"}
-
-#         return {"status": "already processed"}
-
-#     return {"status": "ignored - unsupported event"}
-
-
+# ----------------------
+# webhook
+#-----------------------
 
 @router.post("/webhook/notchpay")
 async def notchpay_webhook(request: Request, session: SessionDep):
@@ -418,7 +387,7 @@ async def notchpay_webhook(request: Request, session: SessionDep):
             if user:
                 user.has_paid = True
                 session.add(user)
-                
+
             session.commit()
 
             return {"status": "payment updated"}
@@ -428,6 +397,28 @@ async def notchpay_webhook(request: Request, session: SessionDep):
     return {
         "status": f"ignored - event was {event}"
     }
+
+# -------------------------------
+# transaction for users
+#---------------------------------
+
+@router.get('/transactions/{user_id}')
+def getUserTransactions(user_id:str, session:SessionDep):
+    user = session.exec(select(User).where(User.id == user_id)).first()
+
+    if not user:
+        raise HTTPException(
+            detail="User not Found",
+            status_code=404
+        )
+    
+    transaction = session.exec(select(Payment).where(Payment.job_seeker_id == user.id)).all()
+
+    if not transaction:
+        return {"message":"No ransactions"}
+    
+    return{"transactions":transaction}
+    
 
 
 

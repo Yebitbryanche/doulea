@@ -3,6 +3,7 @@ import "./global.css"
 import { AuthProvider } from "./context/AuthContext";
 import { UploadImageProvider } from "./context/Uploadcontext";
 import { LikeProvider } from "./context/LikeContext";
+import '@/i18n'
 
 export default function RootLayout() {
   return (

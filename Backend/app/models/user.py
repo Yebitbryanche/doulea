@@ -2,6 +2,7 @@ from datetime import datetime
 from typing import Optional, TYPE_CHECKING
 from sqlmodel import Field, Relationship, SQLModel
 from utils.dbUtils import generate_job_id
+from schema import NotificationType
 
 
 if TYPE_CHECKING:
@@ -59,6 +60,13 @@ class Payment(SQLModel,table=True):
     reference:str = Field(nullable=False)
 
 
-
+class Notification(SQLModel,table=True):
+    id:int = Field(primary_key=True)
+    user_id:str = Field(foreign_key="user.id")
+    title:str = Field(index=True)
+    message:str = Field(index= True)
+    type:NotificationType = Field(nullable=False)
+    is_read:bool = Field(default=False)
+    created_at: datetime = Field(default_factory=datetime.utcnow)
 
 

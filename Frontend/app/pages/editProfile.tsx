@@ -110,7 +110,9 @@ const profile = () => {
                             name='camera' size={20} color={"white"}/>
                     </TouchableOpacity>
                 </View>
-                <Text className='text-sm font-semibold my-2'>{user?.bio}</Text>
+                <Text className='text-sm font-semibold my-2'>{!user?.bio?"Tell us about you":user?.bio}</Text>
+                {user?.role &&
+                <View>
                 {user?.is_verified?
                     <View className='flex flex-row gap-x-2 items-center py-3'>
                         <Octicons name='verified' size={15} color={'#5677E8'}/>
@@ -121,6 +123,7 @@ const profile = () => {
                         <Text className='text-sm font-bold text-[#cb1931]'>Not Verified</Text>
                     </View>
                 }
+                </View>}
                 
             </View>
             <View className='flex flex-col items-center gap-y-4 mt-4 p-3'>

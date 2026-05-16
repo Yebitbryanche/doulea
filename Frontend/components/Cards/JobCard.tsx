@@ -25,6 +25,7 @@ export interface CardProps{
     Likeicon?:React.ReactNode
     setverified?:boolean
     employer?:EmployerProps
+    location?:string
 }
 
 const JobCard = ({
