@@ -1,6 +1,7 @@
 from pydantic import BaseModel
 from typing import Optional
 from sqlmodel import SQLModel
+from enum import Enum
 
 class UserCreate(BaseModel):
     user_name: str
@@ -47,3 +48,9 @@ class NotchPayData(BaseModel):
 class NotchPayWebhook(BaseModel):
     event: str
     data: NotchPayData
+
+class NotificationType(str, Enum):
+    PAYMENT = "payment"
+    APPLICATION = "application"
+    JOB_POSTED = "job_posted"
+    ADMIN = "admin"

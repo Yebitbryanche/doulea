@@ -9,3 +9,4 @@ pwdlib[argon2]
 aiosmtplib
 cloudinary
 requests
+pydantic_settings

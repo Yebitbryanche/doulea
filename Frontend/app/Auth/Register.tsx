@@ -10,6 +10,7 @@ import Toast from '@/components/Toast';
 import { Link, router } from 'expo-router';
 import { checkEmail, passwordCheck, phonecheck } from '@/components/utils/contraints';
 import apiClient from '../apiClient';
+import { useTranslation } from 'react-i18next';
 
 
 const Register = () => {
@@ -22,6 +23,7 @@ const Register = () => {
   const [toastVisible, setToastVisible] = useState(false)
   const [toastMessage, setToastMessage] = useState('')
   const [role, setRole] = useState(false)
+  const {t} = useTranslation()
 
   const write_to_db = async () => {
     try{
@@ -33,7 +35,7 @@ const Register = () => {
         phone:phone.trim(),
         role 
       })
-      setToastMessage('Account created successfully!')
+      setToastMessage(`${t('Account created successfully')}`)
       setToastType('success')
       setToastVisible(true)
 
@@ -50,7 +52,12 @@ const Register = () => {
       },1000)
     }
     catch(error:any){
-      console.log(error)
+      console.log(error.response.data)
+      setToastMessage(error.response.data.detail)
+      setToastType('error')
+      setToastVisible(true)
+      return
+      
     }
   }
 
@@ -58,47 +65,47 @@ const Register = () => {
 
 const handleRegister = () => {
   if(!user_name){
-    setToastMessage('Full Name required!')
+    setToastMessage(`${t("Full Name required")}`)
     setToastType('error')
     setToastVisible(true)
     return
   }
 
   if(!email){
-  setToastMessage('email required!')
+  setToastMessage(`${t("email required")}`)
   setToastType('error')
   setToastVisible(true)
   return
   }
 
   if(!password){
-  setToastMessage('password required!')
+  setToastMessage(`${t("password required")}`)
   setToastType('error')
   setToastVisible(true)
   return
   }
 
   if(!phone){
-  setToastMessage('Phone required!')
+  setToastMessage(`${t('Phone required')}`)
   setToastType('error')
   setToastVisible(true)
   return
   }
 
 if(!checkEmail(email)){
-  setToastMessage('Invalid Email! pleas check and try again avoid spaces as well')
+  setToastMessage(`${t('Invalid Email! pleas check and try again avoid spaces as well')}`)
   setToastType('error')
   setToastVisible(true)
   return
 }
 if(!passwordCheck(password)){
-  setToastMessage('Password is weak, try adding numbers and Special Characters: ABcd@#$')
+  setToastMessage(`${t('Password is weak, try adding numbers and Special Characters: ABcd@#$')}`)
   setToastType('error')
   setToastVisible(true)
   return
 }
 if(!phonecheck(phone)){
-  setToastMessage('Invalid Phone number! pleas check and try again')
+  setToastMessage(`${t('Invalid Phone number! pleas check and try again')}`)
   setToastType('error')
   setToastVisible(true)
   return
@@ -118,18 +125,18 @@ write_to_db()
       >
         <ScrollView>
           <View className='flex flex-col items-center'>
-            <RegistrationHeader text='Get Started!'/>
+            <RegistrationHeader text={t('get started')+"!"}/>
             <View className='my-[2rem] flex flex-col gap-y-5'>
-                <InputField label='Full Name' placeholder='John Doe' keyboardType='default' onChange={setUserName} value={user_name}/>
-                <InputField label='Email' placeholder='examplemail@gmail.com' keyboardType='default' onChange={setEmail} value={email.trim()}/>
-                <InputField label='Password' secureText={true} keyboardType='default' 
+                <InputField label={t('Full Name')} placeholder='John Doe' keyboardType='default' onChange={setUserName} value={user_name}/>
+                <InputField label={t('email')} placeholder='examplemail@gmail.com' keyboardType='default' onChange={setEmail} value={email.trim()}/>
+                <InputField label={t('password')} secureText={true} keyboardType='default' 
                   showPassword={toggleShowPassword}
                   onToggle={() => setToggleShowPassword(!toggleShowPassword)}
                   icon={toggleShowPassword ? images.shuteye : images.eye}
                   onChange={setPassword}
                   value={password}
                 />
-                <InputField label='Phone' placeholder=' 670 254 124' keyboardType='phone-pad' inputMode='tel' onChange={setPhone} value={phone}/>
+                <InputField label={t('phone')} placeholder=' 670 254 124' keyboardType='phone-pad' inputMode='tel' onChange={setPhone} value={phone}/>
               <View className='flex flex-row items-center'>
                 <Checkbox
                   style={{margin: 8,}}
@@ -137,13 +144,13 @@ write_to_db()
                   onValueChange={setRole}
                   color={role ? '#2563EB' : undefined}
                 />
-                <Text> Register as Employer</Text>
+                <Text> {t("register as employer")}</Text>
               </View> 
                 
               <View className='py-[2rem] flex self-center'>
-                <RegisterButton title='Register' onPress={handleRegister}/>
+                <RegisterButton title={t('Register')} onPress={handleRegister}/>
               </View>
-              <Link href={'/Auth/Login'} className='flex self-center text-primary'>Alread have an account</Link>
+              <Link href={'/Auth/Login'} className='flex self-center text-primary'>{t("Alread have an account")}</Link>
             </View>
           </View>
         </ScrollView>

@@ -72,7 +72,7 @@ const Settings = () => {
           <Item
             icon={<Ionicons name="language" size={20} />}
             label="Language"
-            onPress={() => {}}
+            onPress={() => router.push("/pages/LanguageSwitch")}
           />
           <Item
             icon={<Ionicons name="notifications-outline" size={20} />}
@@ -111,7 +111,7 @@ const Settings = () => {
           <Item
             icon={<Ionicons name="receipt-outline" size={20} />}
             label="Transactions"
-            onPress={() => {}}
+            onPress={() => {router.push('/pages/transactions/transactionDetails')}}
           />
         </Section>
 

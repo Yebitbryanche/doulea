@@ -1,7 +1,7 @@
 import Review_card from '@/components/Cards/reviews';
 import { getReviews, writeReview } from '@/components/requests/requests';
 import images from '@/types/images';
-import { AntDesign, Feather, FontAwesome, FontAwesome5 } from '@expo/vector-icons';
+import { AntDesign, Feather, FontAwesome, FontAwesome5, Fontisto } from '@expo/vector-icons';
 import React, {useEffect, useState} from 'react';
 import { View, Text, ScrollView, Image, TouchableOpacity, TextInput, KeyboardAvoidingView, Platform} from 'react-native';
 import { useLocalSearchParams } from 'expo-router';
@@ -141,7 +141,7 @@ const myJobs = () => {
             <View className="flex-row justify-center mb-4">
               {[1, 2, 3, 4, 5].map((i) => (
                 <TouchableOpacity key={i} onPress={() => setRating(i)}>
-                  <Feather
+                  <Fontisto
                     name="star"
                     size={28}
                     color={i <= rating ? "#facc15" : "#d1d5db"}

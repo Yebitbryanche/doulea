@@ -26,6 +26,7 @@ class Job(SQLModel,table=True):
     embedding: Optional[list[float]] = Field(
         sa_column=Column(JSON)
     )
+    view_count:int = Field(nullable=True, default=0)
 
 
 

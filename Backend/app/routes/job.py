@@ -395,22 +395,23 @@ def recommend_jobs(user_id: str, session: SessionDep):
         avg_rating = employer_avg_map.get(job.employer_id)
 
         recommended.append({
-            "job": {
                 "id": job.id,
                 "title": job.title,
                 "description": job.description,
                 "category": job.category,
                 "location": job.location,
+                "payment":job.payment,
+                "cover_image_URL":job.cover_image_URL,
                 "created_at": job.created_at,
-            },
-            "employer": {
-                "id": employer.id if employer else None,
-                "name": employer.user_name if employer else None,
-                "email": employer.email if employer else None,
-                "avatar": getattr(employer, "avatar", None),  # optional
-            },
-            "employer_rating": avg_rating,
-            "score": float(score)  # useful for debugging / tuning
+                "employer":{
+                    "id": employer.id if employer else None,
+                    "name": employer.user_name if employer else None,
+                    "email": employer.email if employer else None,
+                    "is_verified":employer.is_verified if employer else None,
+                    "avatar": getattr(employer, "avatar", None),  # optional
+                    "employer_rating": avg_rating,
+                    "score": float(score)  # useful for debugging / tuning
+                }
         })
 
     return recommended
