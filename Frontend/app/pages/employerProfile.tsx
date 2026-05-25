@@ -40,7 +40,7 @@ const myJobs = () => {
       setLoading(true)
       const user_id = user?.id
       const response = await writeReview(user_id,rating, review, comment, id)
-      fetchUser()
+      fetch_reviews()
     }
     catch(error:any){
       console.error(error.message)

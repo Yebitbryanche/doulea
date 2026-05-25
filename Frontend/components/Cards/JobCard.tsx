@@ -52,7 +52,7 @@ const JobCard = ({
     };
 
   return (
-    <View className='bg-white w-[324px] rounded-2xl m-3 p-1'
+    <View className='bg-white rounded-2xl m-3 p-1'
         style={{
             elevation:5,
             shadowColor:"#000",

@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, TextInput, Image, TouchableOpacity } from 'react-native';
+import { View, Text, TextInput, Image, TouchableOpacity, Platform } from 'react-native';
 import { KeyboardTypeOptions,InputModeOptions } from 'react-native';
 
 interface InputProps{
@@ -35,11 +35,24 @@ const InputField = ({
         <TextInput
           placeholder={placeholder}
           onChangeText={onChange}
-          className="border border-gray-300 border-1 w-[330px] rounded-2xl focus:border-primary/50 focus:border-1 pr-12"
+          //className="border border-gray-300 border-1 w-[330px] rounded-2xl focus:border-primary/50 focus:border-1 pr-12"
           value={value}
           secureTextEntry={secureText && !showPassword}
           keyboardType={keyboardType}
           inputMode={inputMode}
+      className="
+    border border-gray-300
+    w-[330px]
+    h-14
+    rounded-2xl
+    px-4
+    text-base
+    pr-12
+    focus:border-primary/50
+  "
+  style={{
+    paddingVertical: Platform.OS === 'ios' ? 14 : 10,
+  }}
         />
 
         {secureText && (

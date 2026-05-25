@@ -1,7 +1,5 @@
 import { Tabs } from "expo-router"
-import FontAwesome from '@expo/vector-icons/FontAwesome';
-import MaterialIcons from "@expo/vector-icons/MaterialIcons";
-import Fontisto from '@expo/vector-icons/Fontisto';
+import { Ionicons } from "@expo/vector-icons";
 
 
 export default function TabLayout(){
@@ -22,28 +20,28 @@ export default function TabLayout(){
             name="Home"
             options={{
                 title:"Home",
-                tabBarIcon: ({color}) => <FontAwesome name="home" size={28} color={color}/>
+                tabBarIcon: ({color}) => <Ionicons name="home-outline" size={28} color={color}/>
             }}
             />
             <Tabs.Screen
             name="Upload"
             options={{
                 title:"Upload",
-                tabBarIcon: ({color}) => <MaterialIcons name="post-add" size={28} color={color}/>
+                tabBarIcon: ({color}) => <Ionicons name="cloud-upload-outline" size={28} color={color}/>
             }}
             />
             <Tabs.Screen
             name="Favorites"
             options={{
                 title:"Favorites",
-                tabBarIcon: ({color}) => <Fontisto name="favorite" size={25} color={color}/>
+                tabBarIcon: ({color}) => <Ionicons name="bookmark-outline" size={25} color={color}/>
             }}
             />
                         <Tabs.Screen
             name="Notifications"
             options={{
                 title:"Notifications",
-                tabBarIcon: ({color}) => <Fontisto name="bell" size={25} color={color}/>
+                tabBarIcon: ({color}) => <Ionicons name="notifications-outline" size={25} color={color}/>
             }}
             />
         </Tabs>

@@ -30,7 +30,7 @@ const EmployerJobCard = ({
         shadowRadius: 0,
         elevation: 2,
       }}
-    >
+    >~
       {/* Image */}
       <Image
         source={{ uri: cover_image_URL }}

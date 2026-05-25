@@ -16,6 +16,7 @@ import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 import FontAwesome6 from "@expo/vector-icons/FontAwesome6";
 import { timeAgo } from "@/components/utils/contraints";
 import { useAuth } from "@/app/context/AuthContext";
+import { useLike } from "@/app/context/LikeContext";
 
 
 const { height } = Dimensions.get("window");
@@ -25,6 +26,7 @@ const JobDetails = () => {
   const {user} = useAuth()
   const [job, setJob] = useState<DetailProp>();
   const [category, setCategory] = useState<string[]>([]);
+  const {toggleLike, isLiked} = useLike()
 
   const getJob = async () => {
     try {
@@ -35,6 +37,10 @@ const JobDetails = () => {
       console.log(error.message);
     }
   };
+
+  const toggle_like = async () => {
+    await toggleLike(user?.id,id.toString())
+  }
 
   useEffect(() => {
     if (id) getJob();
@@ -62,8 +68,8 @@ const JobDetails = () => {
               <Entypo name="chevron-left" size={20} color={'#2563EB'}/>
             </TouchableOpacity>
 
-            <TouchableOpacity className="bg-white p-2 rounded-full">
-              <MaterialIcons name="favorite-border" size={20} color={'#2563EB'}/>
+            <TouchableOpacity className="bg-white p-2 rounded-full" onPress={toggle_like}>
+            <MaterialIcons name={!isLiked(id.toString())?"favorite-border":"favorite"} size={20} color={!isLiked(id.toString())?'#2563EB':'#db0658'}/>
             </TouchableOpacity>
           </View>
         </View>

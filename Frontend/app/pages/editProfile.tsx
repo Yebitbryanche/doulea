@@ -69,13 +69,7 @@ const profile = () => {
                 return;
             }
             if(!location){
-                setMessage('Name required');
-                setType('error');
-                setvisible(true);
-                return;
-            }
-            if(!bio){
-                setMessage('Name required');
+                setMessage('Location required');
                 setType('error');
                 setvisible(true);
                 return;

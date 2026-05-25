@@ -7,7 +7,7 @@ from utils.job.upload import generate_embedding, upload_file
 from schema.job import JobCreate,JobUpdate, LikeRequest
 from schema.users import UserPublic
 from models.job import Job, JobLike
-from models.user import User,EmployerRating
+from models.user import Notification, User,EmployerRating
 from db import SessionDep
 import numpy as np
 from sklearn.metrics.pairwise import cosine_similarity
@@ -66,6 +66,22 @@ def upload_job(job: JobCreate, session: SessionDep,currentUser = Depends(get_cur
     db_job.embedding = generate_embedding(db_job)
 
     session.add(db_job)
+
+
+    #select all non employers
+    users = session.exec(select(User).where(User.role == False)).all()
+
+    # create notifications
+    for user in users:
+        notification = Notification(
+            user_id=user.id,
+            title="New Job Posted",
+            type="job alert",
+            message=f"{currentUser.user_name} just posted a new job {db_job.title}"
+        )
+
+        session.add(notification)
+
     session.commit()
     session.refresh(db_job)
 
@@ -218,7 +234,7 @@ def like_job(user_id: str, data: LikeRequest, session: SessionDep):
 # remove like || unlike
 #---------------------
 
-@router.delete('/unlike_job/{user_id}')
+@router.delete('/unlike_job/{user_id}/{job_id}')
 def UnlikeJob(user_id: str, job_id: str, session: SessionDep):
 
     liked_job = session.exec(select(JobLike).where(

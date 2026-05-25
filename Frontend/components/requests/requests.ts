@@ -144,7 +144,7 @@ export const initiatePayment = async (id:string | undefined, amount:number) => {
     }
     catch(error:any){
         console.error(error.response.data)
-        return null
+        throw error
     }
 }
 
@@ -163,5 +163,60 @@ export const getTransactionDetails = async (id:string |undefined) => {
 }
 
 
+// get notifications for a user
+export const getNotifications = async (
+    user_id:string | undefined,
+    limit:number,
+    offset:number) => {
+        try{
+            const response = await apiClient.get(`/users/get_notifications?limit=${limit}&offset=${offset}`,
+                {params:{user_id}}
+            )
+            console.log(response.data)
+            return response.data
+        }
+        catch(error:any){
+            console.error(error.response.data)
+            throw error;
+        }
+    }
 
+// mark notification as read
+
+export const readNotification =  async (notification_id:number) => {
+    try{
+        const response = await apiClient.patch(`users/mark_as_read/${notification_id}`)
+        console.log(response.data)
+        return response.data
+    }
+    catch(error:any){
+        console.error(error.response.data)
+        throw error
+    }
+}
+
+
+// delete a particular notification request
+export const deleteANotification = async (notification_id:number) => {
+    try{
+        const response = await apiClient.delete(`users/delete_notification/${notification_id}`)
+        console.log("item deleted")
+    }
+    catch(error:any){
+        console.error(error.response.data)
+    }
+}
+
+
+//delete all notifications for a particular user
+export const clear_all = async (user_id:string | undefined) => {
+    try{
+        const response = await apiClient.delete(`users/clear_all/${user_id}`);
+        console.log('notifications cleared')
+    }
+    catch(error:any){
+        console.error(error.response.data)
+        throw error;
+    }
+}
 

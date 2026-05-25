@@ -53,3 +53,13 @@ export interface TransactionTypes {
     created_at:string;
     reference:string
 }
+
+export type Notifications_type={
+    id:number,
+    created_at:string,
+    is_read:boolean,
+    message:string,
+    title:string,
+    type:string,
+    user_id:string
+}

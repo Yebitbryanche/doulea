@@ -24,14 +24,21 @@ const Settings = () => {
   );
 
   const Section = ({ title, children }: any) => (
-    <View className="bg-white mx-4 mt-4 rounded-2xl px-4">
+    <View className="bg-white mx-4 mt-4 rounded-2xl px-4"
+      style={{
+        shadowColor: "#000",
+        shadowOffset: { width: 0, height: 0 },
+        shadowOpacity: 0.5,
+        shadowRadius: 10,
+        elevation: 2,
+      }}>
       <Text className="text-primary font-black text-sm mt-3">{title}</Text>
       {children}
     </View>
   );
 
   return (
-    <SafeAreaView className="flex-1 bg-gray-100">
+    <SafeAreaView className="flex-1 bg-white">
       <ScrollView showsVerticalScrollIndicator={false}>
 
         {/* 👤 PROFILE HEADER */}
