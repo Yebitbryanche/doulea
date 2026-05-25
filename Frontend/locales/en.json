@@ -28,5 +28,16 @@
   "English":"English",
   "Default language":"Default language",
   "You can change this anytime in settings":"You can change this anytime in settings",
-  "Password is weak, try adding numbers and Special Characters":"Password is weak, try adding numbers and Special Characters"
+  "Password is weak, try adding numbers and Special Characters":"Password is weak, try adding numbers and Special Characters",
+  "recent":"Recent",
+  "nearby":"Near-by",
+  "popular":"Popular",
+  "recommended":"Recommended",
+  "home":"Home",
+  "upload":"Upload",
+  "favourite":"Favourite",
+  "are_you_sure_you_want_to_logout_from_your_account_?":"Are you sure you want to logout from your account?",
+  "unverified":"Unverified",
+  "verified":"Verified",
+  "delete":"Delete"
 }

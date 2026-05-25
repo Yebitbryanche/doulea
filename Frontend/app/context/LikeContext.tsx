@@ -1,10 +1,11 @@
-import { createContext, useContext, useState, useEffect } from "react";
+import { createContext, useContext, useState } from "react";
 import apiClient from "../apiClient";
 
 interface LikeProps {
   likedJobs: string[];
   toggleLike: (user_id: string | undefined, job_id: string) => Promise<void>;
   isLiked: (job_id: string) => boolean;
+  unlike:(user_id:string | undefined, job_id:string | undefined) => Promise<void>
 }
 
 const LikeJobContext = createContext<LikeProps | undefined>(undefined);
@@ -20,9 +21,7 @@ export const LikeProvider = ({ children }: any) => {
 
     try {
       if (isLiked(job_id)) {
-        await apiClient.delete(`/job/unlike_job/${user_id}`, {
-          params: { job_id },
-        });
+        await apiClient.delete(`/job/unlike_job/${user_id}/${job_id}`);
 
         setLikedJobs(prev => prev.filter(id => id !== job_id));
       } else {
@@ -37,8 +36,27 @@ export const LikeProvider = ({ children }: any) => {
     }
   };
 
+
+  const unlike = async (
+    user_id: string | undefined,
+    job_id: string | undefined
+  ) => {
+    if (!user_id || !job_id) return;
+
+    try {
+      await apiClient.delete(`/job/unlike_job/${user_id}/${job_id}`);
+
+      // instantly update liked state
+      setLikedJobs((prev) => prev.filter((id) => id !== job_id));
+
+      console.log("removed from favorites");
+    } catch (error: any) {
+      console.error(error.response?.data);
+    }
+  };
+
   return (
-    <LikeJobContext.Provider value={{ likedJobs, toggleLike, isLiked }}>
+    <LikeJobContext.Provider value={{ likedJobs, toggleLike, isLiked, unlike }}>
       {children}
     </LikeJobContext.Provider>
   );

@@ -7,10 +7,10 @@ import uuid
 from sqlmodel import select, func
 from db import SessionDep
 from utils.job.upload import upload_file
-from models import User,EmployerRating, Payment
+from models import User,EmployerRating, Payment, Notification
 from models.job import Job
 from config import settings
-from schema.users import LoginRequest, MakePayment, NotchPayWebhook, ReviewModel, UserCreate, UserUpdate
+from schema.users import LoginRequest, MakePayment, NotchPayWebhook, NotificationType, ReviewModel, UserCreate, UserUpdate
 from utils.userUtills import hash_password, authenticate_user, create_access_token,get_current_user,send_document_email
 
 
@@ -302,7 +302,7 @@ def InitaitePayment(session:SessionDep, newPay:MakePayment):
             status_code=404,
             detail="Uer does not exist"
         )
-    if newPay.amount < 100:
+    if newPay.amount < 1000:
         raise HTTPException(
             detail="forbidden",
             status_code=403
@@ -344,6 +344,14 @@ def InitaitePayment(session:SessionDep, newPay:MakePayment):
         reference=reference,
         status="pending"
     )
+#payment initiated notification message
+    payment_initiated = Notification(
+        user_id=user.id,
+        title="Payment",
+        type=NotificationType.PAYMENT,
+        message=f"payment of {newPay.amount}XAF initiated"
+    )
+    session.add(payment_initiated)
 
     session.add(paymentData)
     session.commit()
@@ -387,6 +395,15 @@ async def notchpay_webhook(request: Request, session: SessionDep):
             if user:
                 user.has_paid = True
                 session.add(user)
+                #payment completed notification message
+                payment_complete = Notification(
+                    user_id=user.id,
+                    title="Payment",
+                    type=NotificationType.PAYMENT,
+                    message=f"payment of {payment.amount, payment.currency} completed"
+                )
+
+                session.add(payment_complete)
 
             session.commit()
 
@@ -418,7 +435,98 @@ def getUserTransactions(user_id:str, session:SessionDep):
         return {"message":"No ransactions"}
     
     return{"transactions":transaction}
+
+
+#---------------------------
+# get user notifications
+
+@router.get('/get_notifications')
+def get_userNotifiicatiions(
+    user_id:str,
+    session:SessionDep,
+    limit:int = 10,
+    offset:int = 0,
+):
+    query = (
+        select(Notification)
+        .where(Notification.user_id == user_id)
+        .order_by(Notification.created_at.desc())
+        .offset(offset)
+        .limit(limit)
+        )
+
+    data = session.exec(query).all()
+
+    total = session.exec(
+        select(func.count()).select_from(Notification).where(Notification.user_id == user_id)
+    ).one()
+
+    return{
+        "notifications":data,
+        "total":total
+    }
+
+
+#-----------------------
+#mark notification as read
+
+@router.patch('/mark_as_read/{notification_id}')
+def mark_notification_as_read(
+    notification_id:int,
+    session:SessionDep
+):
+
     
+    notification = session.exec(select(Notification).where(Notification.id == notification_id)).first()
+
+    if not notification:
+        raise HTTPException(
+            detail="Notification not found",
+            status_code=404
+        )
+
+    notification.is_read = True
+
+    session.add(notification)
+    session.commit()
+
+    return{"message":"Notification read"}
 
 
 
+#---------------------------------
+# delete one Notification
+
+@router.delete('/delete_notification/{notification_id}')
+def delete_notification(
+    notification_id:int,
+    session:SessionDep
+):
+    notification = session.exec(select(Notification).where(Notification.id == notification_id)).first()
+    
+    if not notification:
+        raise HTTPException(
+            detail="Notification not found",
+            status_code=404
+        )
+    
+    session.delete(notification)
+    session.commit()
+    return {"notification deleted"}
+
+
+#--------------------------------
+# clear all notifications for a particular user
+
+@router.delete('/clear_all/{user_id}')
+def clear_all_notifications(user_id:str,session:SessionDep):
+    notifications = session.exec(select(Notification).where(Notification.user_id == user_id)).all()
+
+    if not notifications:
+        return{"message":"Nothing here"}
+    
+    for notification in notifications:
+        session.delete(notification)
+    session.commit()
+
+    return{"message":"All notifications Deleted"}

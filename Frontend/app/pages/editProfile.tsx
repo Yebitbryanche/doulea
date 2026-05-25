@@ -10,9 +10,11 @@ import Toast, { ToastType } from '@/components/Toast';
 import DefaultLoader from '@/components/Loader/defaultLoader';
 import { router } from 'expo-router';
 import { useUpload } from '../context/Uploadcontext';
+import { useTranslation } from 'react-i18next';
 
 const profile = () => {
     const {user,fetchUser} = useAuth()
+    const {t} = useTranslation()
     const [name,setName] = useState<string |undefined>(user?.user_name || "")
     const [email, setEmail] = useState<string |undefined>(user?.email || "");
     const [phone, setPhone] = useState<string | undefined>(user?.phone||'')
@@ -69,13 +71,7 @@ const profile = () => {
                 return;
             }
             if(!location){
-                setMessage('Name required');
-                setType('error');
-                setvisible(true);
-                return;
-            }
-            if(!bio){
-                setMessage('Name required');
+                setMessage('Location required');
                 setType('error');
                 setvisible(true);
                 return;
@@ -102,7 +98,7 @@ const profile = () => {
             <ScrollView>
             <View className='flex flex-col items-center p-3'>
                 <Feather name='chevron-left' size={23} className='absolute left-2 top-4' onPress={() => router.back()}/>
-                <Text className='font-bold text-2xl'>Edit Profile</Text>
+                <Text className='font-bold text-2xl'>{t("Edit Profile")}</Text>
                 <View className='mt-[3rem]'>
                     <Image className="w-[100px] h-[100px] rounded-full" source={user?.profile_URL?{uri:user?.profile_URL}:require('@/assets/images/default_profile.jpg')}  resizeMode={'contain'}/>
                     <TouchableOpacity  onPress={() => handleUploadImage()} className='absolute bottom-0 right-0 bg-primary border-2 border-white p-2 rounded-full'>
@@ -128,19 +124,19 @@ const profile = () => {
             </View>
             <View className='flex flex-col items-center gap-y-4 mt-4 p-3'>
                 <InputField 
-                label='Name'
+                label={t('Name')}
                 value={name}
                 placeholder='New Name'
                 onChange={(name) => {setName(name)}}/>
 
                 <InputField 
-                label='Email'
+                label={t('Email')}
                 value={email}
                 placeholder='new@gmail.com'
                 onChange={(email) => {setEmail(email)}}/>
 
                 <InputField 
-                label='Phone'
+                label={t('Phone')}
                 value={phone}
                 placeholder='+237 000 000 000'
                 keyboardType='default'
@@ -148,20 +144,20 @@ const profile = () => {
 
 
                 <InputField 
-                label='Location'
+                label={t('Location')}
                 value={location}
                 placeholder='Location'
                 onChange={(location) => {setLocation(location)}}/>
 
                 <InputField
                 value={bio}
-                label='Bio'
+                label={t('Bio')}
                 placeholder='tell us about you'
                 onChange={(bio) => {setBio(bio)}}/>
 
             </View>
             <View className='flex self-center my-3'>
-                <RegisterButton title='Save Edits' onPress={handleEdit}/>
+                <RegisterButton title={t('Save Edits')} onPress={handleEdit}/>
             </View>
             </ScrollView>
         </KeyboardAvoidingView>

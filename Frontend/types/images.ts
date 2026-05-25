@@ -8,6 +8,7 @@ import no_reviews from "../assets/images/no reviews.png"
 import myposts from "../assets/images/no personal posts.png"
 import favorites from "../assets/images/favorites.png"
 import soscer from "@/assets/images/upload files.png"
+import no_notification from "@/assets/images/no_notification.png"
 
 export default{
     shuteye,
@@ -20,4 +21,5 @@ export default{
     myposts,
     favorites,
     soscer,
+    no_notification,
 }

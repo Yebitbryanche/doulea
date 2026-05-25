@@ -12,6 +12,8 @@ import { useAuth } from '../context/AuthContext';
 import { useLike } from '../context/LikeContext';
 import images from '@/types/images';
 import DefaultLoader from '@/components/Loader/defaultLoader';
+import { Ionicons } from '@expo/vector-icons';
+import { useTranslation } from 'react-i18next';
 
 
 const Home = () => {
@@ -23,8 +25,9 @@ const Home = () => {
     const [hasMore, setHasMore] = useState(true)
     const { toggleLike, isLiked } = useLike()
     const {user} = useAuth()
+    const {t} = useTranslation()
     const LIMIT = 10;
-    const filters = ["Recent", 'Near by',"Popular","Recommended"]
+    const filters = ["recent", 'nearby',"popular","recommended"]
     const [activeFilter, setActiveFilter] = useState("Recent")
 
 
@@ -32,7 +35,7 @@ const handleFilter = async (filter: string) => {
   setActiveFilter(filter)
 
   // Recent
-  if (filter === "Recent") {
+  if (filter === "recent") {
     const updatedJobs = [...jobs].sort(
       (a, b) =>
         new Date(b.created_at).getTime() -
@@ -54,7 +57,7 @@ const handleFilter = async (filter: string) => {
   // }
 
   // Near by
-  if (filter === "Near by") {
+  if (filter === "nearby") {
     const updatedJobs = jobs.filter((job) =>
       user?.address?
       job.location?.toLowerCase().includes(user.address.toLocaleLowerCase()):
@@ -66,7 +69,7 @@ const handleFilter = async (filter: string) => {
   }
 
   // Recommended
-  if (filter === "Recommended") {
+  if (filter === "recommended") {
     try {
       setLoading(true)
 
@@ -183,11 +186,11 @@ const getJobs = async () => {
     <SafeAreaView className='flex flex-1 flex-col bg-white'>
       <View className='flex flex-col items-center'>
         <View className='w-full flex flex-row justify-between p-4 items-center'>
-          <Octicons name="gear" size={24} color="#6B7280" onPress={() => {router.push('/pages/Settings')}}/>
+          <Ionicons name="settings-outline" size={24} color="#6B7280" onPress={() => {router.push('/pages/Settings')}}/>
           <TextInput
-            placeholder='Search'
+            placeholder={t('Search')}
             placeholderTextColor={'gray'}
-            className='border-b-2 border-muted w-[170px]'
+            className='border-b-2 border-muted w-[190px]'
             value={searchQuery}
             onChangeText={handleSearch}/>
           <Feather name="search" size={24} color="#6B7280"/>
@@ -204,7 +207,7 @@ const getJobs = async () => {
                   : "text-gray-400"
               }`}
             >
-              {item}
+              {t(item)}
             </Text>
           </TouchableOpacity>}
         horizontal
@@ -233,7 +236,7 @@ const getJobs = async () => {
             <Text className="text-center py-4">Loading...</Text>
           ) : !hasMore ? (
             <Text className="text-center py-4 mb-[5rem] text-gray-400">
-              No more jobs
+              {t("No more jobs")}
             </Text>
           ) : null
         }

@@ -64,9 +64,7 @@ const EmployerJobCard = ({
 
         {/* Bottom Row */}
         <View className="flex-row justify-between items-center mt-2">
-          <Text className="text-xs text-gray-500">
-            <Feather name='map-pin' size={10} color={'#2563EB'}/> {location}
-          </Text>
+          <Text className="text-xs text-gray-500"><Feather name='map-pin' size={10} color={'#2563EB'}/> {location}</Text>
 
           <Text className="text-xs text-gray-400">
             {formatedDate(created_at)}

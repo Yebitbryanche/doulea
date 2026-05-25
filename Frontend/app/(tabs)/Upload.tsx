@@ -68,6 +68,7 @@ const Uploads = () => {
       setToastMessage("Upload successful!");
       setToastType("success");
       setToastVisible(true);
+      console.log(response.data)
 
       setTimeout(() => {
         router.replace({
@@ -81,7 +82,7 @@ const Uploads = () => {
   };
 
   return (
-    <SafeAreaView className="flex-1 bg-gray-100">
+    <SafeAreaView className="flex-1 bg-white">
       <KeyboardAvoidingView
         style={{ flex: 1 }}
         behavior={Platform.OS === "ios" ? "padding" : "height"}
@@ -97,7 +98,14 @@ const Uploads = () => {
           </View>
 
           {/* 🧾 FORM CARD */}
-          <View className="mx-4 mt-4 bg-white p-5 rounded-2xl">
+          <View className="mx-4 mt-4 bg-white p-5 rounded-2xl"
+          style={{
+            shadowColor: "#000",
+            shadowOffset: { width: 0, height: 0 },
+            shadowOpacity: 0.5,
+            shadowRadius: 10,
+            elevation: 3,
+          }}      >
             
             {/* Title */}
             <Text className="font-medium mb-1">Job Title</Text>
@@ -168,7 +176,7 @@ const Uploads = () => {
         }
 
         {/* 🚀 STICKY BUTTON */}
-        <View className="absolute bottom-0 w-full bg-white px-5 py-4 border-t border-gray-200">
+        <View className="absolute bottom-0 w-full bg-white px-5 border-t border-gray-200">
           <TouchableOpacity
             onPress={ user?.role?handleUpload: () => router.push('/Auth/Register')}
             className="bg-primary py-4 rounded-xl items-center"
