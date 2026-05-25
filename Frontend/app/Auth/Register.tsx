@@ -128,7 +128,7 @@ write_to_db()
             <RegistrationHeader text={t('get started')+"!"}/>
             <View className='my-[2rem] flex flex-col gap-y-5'>
                 <InputField label={t('Full Name')} placeholder='John Doe' keyboardType='default' onChange={setUserName} value={user_name}/>
-                <InputField label={t('email')} placeholder='examplemail@gmail.com' keyboardType='default' onChange={setEmail} value={email.trim()}/>
+                <InputField label={t('Email')} placeholder='examplemail@gmail.com' keyboardType='default' onChange={setEmail} value={email.trim()}/>
                 <InputField label={t('password')} secureText={true} keyboardType='default' 
                   showPassword={toggleShowPassword}
                   onToggle={() => setToggleShowPassword(!toggleShowPassword)}
@@ -136,7 +136,7 @@ write_to_db()
                   onChange={setPassword}
                   value={password}
                 />
-                <InputField label={t('phone')} placeholder=' 670 254 124' keyboardType='phone-pad' inputMode='tel' onChange={setPhone} value={phone}/>
+                <InputField label={t('Phone')} placeholder=' 670 254 124' keyboardType='phone-pad' inputMode='tel' onChange={setPhone} value={phone}/>
               <View className='flex flex-row items-center'>
                 <Checkbox
                   style={{margin: 8,}}

@@ -4,6 +4,7 @@ import React, { useState } from 'react';
 import { View, Text, Image, ImageSourcePropType, TouchableOpacity } from 'react-native';
 import { formatPrice, timeAgo } from '../utils/contraints';
 import { FontAwesome6 } from '@expo/vector-icons';
+import { useTranslation } from 'react-i18next';
 
 export interface EmployerProps{
     user_name:string
@@ -43,6 +44,7 @@ const JobCard = ({
     setverified = false
 }:CardProps) => {
     const [hasImage,setHasImage] = useState(false)
+    const {t} = useTranslation();
 
     const truncate = (text: string, maxLength = 70) => {
     if (!text) return "";
@@ -60,11 +62,13 @@ const JobCard = ({
             shadowOpacity:0.05,
             shadowRadius:6,
         }}>
-        <Image
+        {  cover_image_URL &&      
+            <Image
             source={cover_image_URL && cover_image_URL !== "null" ?{ uri: cover_image_URL }: require('../../assets/images/defaultImage.png')}
             className='w-full h-[180px] rounded-2xl'
              resizeMode={cover_image_URL && cover_image_URL !== "null"?"cover":"contain"}
-        />
+            />
+        }
         <View className='bg-white p-1 right-2 top-2 rounded-2xl absolute'>
             <TouchableOpacity ><Text className='text-primary'>{Likeicon}</Text></TouchableOpacity>
         </View>
@@ -73,14 +77,14 @@ const JobCard = ({
             <Text className='text-xs font-black'>{!employer_rating?"0":employer_rating}</Text>
         </View>
          
-        <View className='p-[0.3rem]'>
+        <View className='px-[0.3rem] pt-8'>
             <Text className='text-sm font-black'>{title}</Text>
             {/*  */}
             <Text className='text-sm py-2 font-medium'>{truncate(description)}</Text>
                 <View>
                 <View className='flex flex-row gap-x-3 py-2'>{
                     category?.map((category,index) =>
-                    (<Text key={index} className='py-1 px-2 bg-secondary rounded-lg text-xs'>{category}</Text>))}</View>
+                    (<Text key={index} className='py-1 px-2 bg-secondary rounded-lg text-xs'>{t(category)}</Text>))}</View>
                 </View>
             <Text className='text-sm font-bold text-gray-400'>{formatPrice(payment)} XAF</Text>
             <View className='flex flex-row justify-between items-center'>
@@ -92,7 +96,7 @@ const JobCard = ({
                             <Octicons name='unverified' size={15} color={"red"}/>
                         </Text>
                         <Text className='px-1 text-red-500 text-xs'>
-                            Unverified
+                            {t("unverified")}
                         </Text>
                     </View>
                     :<View className='flex flex-row items-center'>
@@ -100,7 +104,7 @@ const JobCard = ({
                             <MaterialIcons name='verified' size={15} />
                         </Text>
                         <Text className='px-1 text-blue-500 text-xs'>
-                            Verified
+                            {t("verified")}
                         </Text>
                     </View>}
                     <Text className='text-xs text-gray-400'>{timeAgo(created_at?.toString())}</Text>

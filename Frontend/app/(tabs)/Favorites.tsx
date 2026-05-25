@@ -1,6 +1,6 @@
 import { getUserFav } from "@/components/requests/requests";
 import React, { useCallback, useState } from "react";
-import { View, Text, ScrollView, TouchableOpacity, FlatList } from "react-native";
+import { View, Text, TouchableOpacity, FlatList, useWindowDimensions, } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useAuth } from "../context/AuthContext";
 import { JobDetailProps } from "@/types/other";
@@ -12,11 +12,20 @@ import images from "@/types/images";
 import { useLike } from "../context/LikeContext";
 import { router, useFocusEffect } from "expo-router";
 
+
 const Favorites = () => {
   const { user, fetchUser } = useAuth();
   const [favs, setFavs] = useState<JobDetailProps[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const {unlike} = useLike()
+  const { width } = useWindowDimensions();
+
+
+  const spacing = 12;
+  const numColumns = width > 700 ? 3 : 2;
+  const CARD_WIDTH =
+    (width - spacing * (numColumns + 1)) / numColumns;
+
 
   const getFavs = async () => {
     try {
@@ -70,6 +79,7 @@ useFocusEffect(
 
           </View>}
         data={favs}
+        numColumns={numColumns}
         renderItem={({item}) =>
           <TouchableOpacity
             onPress={() => router.push({
@@ -78,8 +88,9 @@ useFocusEffect(
             })}
             key={item.id}
             activeOpacity={0.8}
-            className="mx-4 my-3 bg-white rounded-2xl overflow-hidden"
+            className="my-3 bg-white rounded-2xl overflow-hidden relative"
             style={{
+              width: CARD_WIDTH,
               shadowColor: "#000",
               shadowOffset: { width: 0, height: 6 },
               shadowOpacity: 0.08,
@@ -89,7 +100,7 @@ useFocusEffect(
           >
             {/* 🖼 IMAGE */}
             <Image
-              className="w-full h-40"
+              className="w-full h-80"
               source={
                 item.cover_image_URL && item.cover_image_URL !== "null"
                   ? { uri: item.cover_image_URL }
@@ -101,16 +112,17 @@ useFocusEffect(
             {/* Favorite Icon */}
             <TouchableOpacity 
               onPress={() => handleUnlike(item.id)}
-              className="absolute top-3 right-3 bg-white p-2 rounded-full" >
+              className="absolute top-3 right-3 bg-white p-2 z-50 rounded-full" >
               <Ionicons name="heart" size={16} color="#ea306e" />
             </TouchableOpacity>
 
             {/* CONTENT */}
-            <View className="p-4">
+            <View className="inset bg-black/30 absolute h-80 top-0 w-full"/>
+            <View className="absolute bottom-1 p-1">
               
               {/* Title */}
               <Text
-                className="text-lg font-bold text-gray-800"
+                className="text-md font-bold text-white"
                 numberOfLines={1}
               >
                 {item.title}
@@ -119,20 +131,16 @@ useFocusEffect(
               {/* Location + Date */}
               <View className="flex-row items-center justify-between mt-2">
                 <View className="flex-row items-center">
-                  <Entypo name="location-pin" size={14} color="#6b7280" />
-                  <Text className="text-sm text-gray-500 ml-1">
+                  <Entypo name="location-pin" size={14} color="#d2d3d4" />
+                  <Text className="text-sm text-gray-200 ml-1">
                     {item.location}
                   </Text>
                 </View>
-
-                <Text className="text-xs text-gray-400">
-                  {formatedDate(item.created_at)}
-                </Text>
               </View>
 
               {/* 💰 Payment */}
               <View className="mt-3">
-                <Text className="text-primary font-bold text-base">
+                <Text className="text-white text-sm">
                   {item.payment} / month
                 </Text>
               </View>
@@ -142,7 +150,7 @@ useFocusEffect(
                 {item.category?.map((cat, index) => (
                   <View
                     key={index}
-                    className="bg-primary/10 px-3 py-1 rounded-full"
+                    className="bg-white px-3 py-1 rounded-full"
                   >
                     <Text className="text-primary text-xs">{cat}</Text>
                   </View>
@@ -158,6 +166,13 @@ useFocusEffect(
             </Text>
           </View>
         }
+        columnWrapperStyle={{
+          justifyContent: "space-between",
+          paddingHorizontal: spacing,
+        }}
+        contentContainerStyle={{
+          paddingBottom: 100,
+        }}
       />
       {/* ⏳ LOADING */}
       {isLoading && (

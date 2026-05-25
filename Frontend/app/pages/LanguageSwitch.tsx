@@ -7,6 +7,7 @@ import {
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useTranslation } from "react-i18next";
+import { Ionicons } from "@expo/vector-icons";
 
 const LanguageSwitch = () => {
   const { i18n, t } = useTranslation();
@@ -20,14 +21,14 @@ const LanguageSwitch = () => {
   };
 
   return (
-    <SafeAreaView className="flex-1 bg-[#F8FAFC] px-4">
+    <SafeAreaView className="flex-1 bg-[#F8FAFC] px-3">
 
       {/* Header */}
-      <View className="mt-8 mb-10 flex flex-col items-center">
+      <View className="mt-8 px-5 mb-10 flex flex-col items-center">
         <Text className="text-3xl font-bold text-gray-900">
           {t("choose a language")}
         </Text>
-        <Text className="text-gray-500 text-sm mt-2 text-base ">
+        <Text className="text-gray-500 text-sm mt-2 text-base">
           {t("Select your preferred language for a better experience")}
         </Text>
       </View>
@@ -76,7 +77,7 @@ const LanguageSwitch = () => {
           </View>
 
           {selectedLanguage === "en" && (
-            <Text className="text-white text-xl">✓</Text>
+            <Text className="text-white text-xl"><Ionicons name="checkmark-circle-outline" size={20}/></Text>
           )}
         </TouchableOpacity>
 
@@ -121,7 +122,7 @@ const LanguageSwitch = () => {
           </View>
 
           {selectedLanguage === "fr" && (
-            <Text className="text-white text-xl">✓</Text>
+            <Text className="text-white text-xl"><Ionicons name="checkmark-circle-outline" size={20}/></Text>
           )}
         </TouchableOpacity>
       </View>
