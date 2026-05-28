@@ -2,7 +2,7 @@ from datetime import datetime
 from typing import Optional,TYPE_CHECKING
 from sqlalchemy import Column
 from sqlalchemy.dialects.postgresql import JSON
-from sqlmodel import ForeignKey, Field, Relationship, SQLModel
+from sqlmodel import Field, Relationship, SQLModel
 from utils.dbUtils import generate_job_id
 
 if TYPE_CHECKING:
