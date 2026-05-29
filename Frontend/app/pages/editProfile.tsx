@@ -107,7 +107,7 @@ const profile = () => {
                     </TouchableOpacity>
                 </View>
                 <Text className='text-sm font-semibold my-2'>{!user?.bio?"Tell us about you":user?.bio}</Text>
-                {user?.role &&
+                {user?.role === 'employer' &&
                 <View>
                 {user?.is_verified?
                     <View className='flex flex-row gap-x-2 items-center py-3'>

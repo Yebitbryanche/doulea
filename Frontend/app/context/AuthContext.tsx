@@ -2,13 +2,19 @@ import React, { createContext, useContext, useEffect, useState } from "react";
 import * as SecureStore from "expo-secure-store";
 import apiClient from "@/app/apiClient";
 
+export type UserRole ={
+  user:"user"
+  admin:"admin"
+  employer:"employer"
+}
+
 type User = {
   id: string;
   email: string;
   bio:string;
   address:string;
   phone:string;
-  role:boolean;
+  role:"user"|"admin"|"employer";
   user_name?: string;
   profile_URL?:string;
   is_verified:boolean;

@@ -17,3 +17,9 @@ class JobUpdate(SQLModel):
 
 class LikeRequest(SQLModel):
     job_id: str
+
+# notification create
+class CreateNotiification(SQLModel):
+    title: str
+    message: str
+    

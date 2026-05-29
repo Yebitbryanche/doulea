@@ -2,7 +2,7 @@ from datetime import datetime
 from typing import Optional, TYPE_CHECKING
 from sqlmodel import Field, Relationship, SQLModel
 from utils.dbUtils import generate_job_id
-from schema import NotificationType
+from schema import NotificationType, UserType
 
 
 if TYPE_CHECKING:
@@ -19,7 +19,7 @@ class User(SQLModel,table=True):
     address:Optional[str] = Field(index=True)
     profile_URL:Optional[str] = Field(index=True)
     is_verified:bool = Field(default=False)
-    role:bool = Field(default=False)
+    role:UserType = Field(nullable=False, default=UserType.USER) # modified user role
     bio:str = Field(index=True, nullable=True)
     has_paid:bool = Field(default = False)
     jobs: list["Job"] = Relationship(back_populates="employer")

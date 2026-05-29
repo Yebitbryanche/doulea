@@ -1,7 +1,7 @@
 from fastapi import FastAPI
 from models import *
 from db import create_db_and_tables
-from routes import user, job
+from routes import user, job, admin
 from fastapi.middleware.cors import CORSMiddleware
 from _config.uploadConfig import cloudinary_config
 
@@ -21,6 +21,7 @@ def on_startup():
 
 app.include_router(user.router)
 app.include_router(job.router)
+app.include_router(admin.router)
 
 @app.get('/')
 def getState():

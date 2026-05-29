@@ -1,5 +1,3 @@
-from typing import List
-
 from fastapi import APIRouter, Depends, HTTPException, UploadFile, File
 from config import settings
 from sqlmodel import delete, func, select

@@ -3,14 +3,14 @@ import RegistrationHeader from '@/components/Header/RegistrationHeader';
 import InputField from '@/components/Input/InputField';
 import images from '@/types/images';
 import { useState } from 'react';
-import { KeyboardAvoidingView, Platform, ScrollView, View, Text } from 'react-native';
+import { KeyboardAvoidingView, Platform, ScrollView, View, Text, TouchableOpacity, Modal } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { Checkbox } from 'expo-checkbox';
 import Toast from '@/components/Toast';
 import { Link, router } from 'expo-router';
 import { checkEmail, passwordCheck, phonecheck } from '@/components/utils/contraints';
 import apiClient from '../apiClient';
 import { useTranslation } from 'react-i18next';
+import { Ionicons } from '@expo/vector-icons';
 
 
 const Register = () => {
@@ -22,8 +22,11 @@ const Register = () => {
   const [toastType, setToastType] = useState<'success'|'error'|'info'>('info')
   const [toastVisible, setToastVisible] = useState(false)
   const [toastMessage, setToastMessage] = useState('')
-  const [role, setRole] = useState(false)
+  const [role, setRole] = useState<'user' | 'employer'>('user')
+  const [roleModalVisible, setRoleModalVisible] = useState(false)
   const {t} = useTranslation()
+
+  const userRole = ['user','employer']
 
   const write_to_db = async () => {
     try{
@@ -44,7 +47,7 @@ const Register = () => {
       setPassword("")
       setPhone("")
       setTimeout(() => {
-        if(!role){
+        if(role !== "employer"){
         router.replace('/Auth/Login')
       }else{
         router.replace('/Auth/PushDoc')
@@ -52,7 +55,7 @@ const Register = () => {
       },1000)
     }
     catch(error:any){
-      console.log(error.response.data)
+      console.log(error.message)
       setToastMessage(error.response.data.detail)
       setToastType('error')
       setToastVisible(true)
@@ -117,6 +120,12 @@ write_to_db()
 
 }
 
+// selected role for a user
+const selectRole = (selectedRole: 'user' | 'employer') => {
+  setRole(selectedRole)
+  setRoleModalVisible(false)
+}
+
   return (
     <SafeAreaView className='flex-1 bg-white'>
       <KeyboardAvoidingView 
@@ -137,14 +146,25 @@ write_to_db()
                   value={password}
                 />
                 <InputField label={t('Phone')} placeholder=' 670 254 124' keyboardType='phone-pad' inputMode='tel' onChange={setPhone} value={phone}/>
-              <View className='flex flex-row items-center'>
-                <Checkbox
-                  style={{margin: 8,}}
-                  value={role}
-                  onValueChange={setRole}
-                  color={role ? '#2563EB' : undefined}
-                />
+              <View className='flex flex-col'>
                 <Text> {t("register as employer")}</Text>
+                <TouchableOpacity
+                  onPress={() => setRoleModalVisible(true)}      
+                  className="
+                    border border-gray-300
+                    w-[330px]
+                    h-14
+                    rounded-2xl
+                    px-4
+                    text-base
+                    pr-12
+                    focus:border-primary/50
+                  "
+                  style={{
+                    paddingVertical: Platform.OS === 'ios' ? 14 : 10,
+                  }}>
+                  <Text>{role}</Text>
+                </TouchableOpacity>
               </View> 
                 
               <View className='py-[2rem] flex self-center'>
@@ -160,6 +180,42 @@ write_to_db()
       message={toastMessage}
       visible={toastVisible}
       onHide={() => setToastVisible(false)}/>
+        {/* 🏷 MODAL */}
+      <Modal visible={roleModalVisible} animationType="slide" transparent>
+        <View className="flex-1 justify-end bg-black/40">
+          <View className="bg-white p-5 rounded-t-3xl">
+            
+            <View className="flex-row justify-between items-center mb-4">
+              <Text className="text-lg font-bold">{t("Choose a role")}</Text>
+              <TouchableOpacity onPress={() => setRoleModalVisible(false)}>
+                <Ionicons name="close" size={24} />
+              </TouchableOpacity>
+            </View>
+
+            <View className="flex-row flex-wrap gap-3">
+              {userRole.map((item) => {
+                const selected = role === item;
+
+                return (
+                  <TouchableOpacity
+                    key={item}
+                    onPress={() => selectRole(item as 'user' | 'employer')}
+                    className={`px-4 py-2 rounded-full border ${
+                      selected
+                        ? "bg-primary border-primary"
+                        : "border-gray-300"
+                    }`}
+                  >
+                    <Text className={selected ? "text-white" : "text-black"}>
+                      {item}
+                    </Text>
+                  </TouchableOpacity>
+                );
+              })}
+            </View>
+          </View>
+        </View>
+      </Modal>
     </SafeAreaView>
   );
 }

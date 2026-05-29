@@ -92,7 +92,7 @@ const Settings = () => {
         </Section>
 
         {/* 💼 APP */}
-        { user?.role &&
+        { user?.role === 'employer' &&
         <Section title={t("App")}>
           <Item
             icon={<Ionicons name="grid-outline" size={20} />}

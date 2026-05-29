@@ -87,7 +87,7 @@ const Uploads = () => {
         style={{ flex: 1 }}
         behavior={Platform.OS === "ios" ? "padding" : "height"}
       >
-        {user?.role ?<ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingBottom: 120 }}>
+        {user?.role === 'employer' ?<ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingBottom: 120 }}>
           
           {/* 🔥 HEADER */}
           <View className="px-5 py-4 bg-white mx-4 rounded-md">
@@ -178,10 +178,10 @@ const Uploads = () => {
         {/* 🚀 STICKY BUTTON */}
         <View className="absolute bottom-0 w-full bg-white px-5 border-t border-gray-200">
           <TouchableOpacity
-            onPress={ user?.role?handleUpload: () => router.push('/Auth/Register')}
+            onPress={ user?.role === 'employer'?handleUpload: () => router.push('/Auth/Register')}
             className="bg-primary py-4 rounded-xl items-center"
           >
-            <Text className="text-white font-bold text-lg">{user?.role?"Continue":"Register as Employer"}</Text>
+            <Text className="text-white font-bold text-lg">{user?.role === 'employer'?"Continue":"Register as Employer"}</Text>
           </TouchableOpacity>
         </View>
 

@@ -95,7 +95,7 @@ async def upload_doc(
     if not user:
         raise HTTPException(status_code=404, detail="user not found")
     
-    if not user.role:
+    if user.role != "employer":
         raise HTTPException(status_code=400, detail="Employers Only")
     
     content = await document.read()

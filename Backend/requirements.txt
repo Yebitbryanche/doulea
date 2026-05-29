@@ -10,3 +10,4 @@ aiosmtplib
 cloudinary
 requests
 pydantic_settings
+sentence-transformers

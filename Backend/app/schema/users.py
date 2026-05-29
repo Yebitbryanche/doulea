@@ -3,6 +3,17 @@ from typing import Optional
 from sqlmodel import SQLModel
 from enum import Enum
 
+class NotificationType(str, Enum):
+    PAYMENT = "payment"
+    APPLICATION = "application"
+    JOB_POSTED = "job_posted"
+    ADMIN = "admin"
+
+class UserType(str, Enum):
+    ADMIN = "admin"
+    EMPLOYER = "employer"
+    USER = "user"
+
 class UserCreate(BaseModel):
     user_name: str
     email: str
@@ -10,7 +21,7 @@ class UserCreate(BaseModel):
     phone: str
     address: Optional[str] = None   # match SQLModel field
     profile_URL: Optional[str] = None
-    role: Optional[bool] = False
+    role: Optional[str] = UserType.USER
 
 class UserUpdate(SQLModel):
     user_name:str
@@ -49,8 +60,4 @@ class NotchPayWebhook(BaseModel):
     event: str
     data: NotchPayData
 
-class NotificationType(str, Enum):
-    PAYMENT = "payment"
-    APPLICATION = "application"
-    JOB_POSTED = "job_posted"
-    ADMIN = "admin"
+
