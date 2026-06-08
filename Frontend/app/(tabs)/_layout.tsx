@@ -1,8 +1,10 @@
 import { Tabs } from "expo-router"
 import { Ionicons } from "@expo/vector-icons";
+import { useTheme } from "../context/ThemeContext";
 
 
 export default function TabLayout(){
+    const {isDark} = useTheme()
     return(
         <Tabs screenOptions={{
             tabBarActiveTintColor:"#2563EB",
@@ -11,9 +13,13 @@ export default function TabLayout(){
                 fontWeight:700,
             },
             tabBarStyle:{
+                position:"absolute",
                 borderTopLeftRadius:30,
                 borderTopRightRadius:30,
+                backgroundColor:isDark?"white":"#111827",
+                overflow:"hidden"
             }
+            
             }}>
 
             <Tabs.Screen

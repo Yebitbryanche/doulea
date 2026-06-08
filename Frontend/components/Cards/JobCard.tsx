@@ -3,8 +3,9 @@ import Octicons from '@expo/vector-icons/Octicons';
 import React, { useState } from 'react';
 import { View, Text, Image, ImageSourcePropType, TouchableOpacity } from 'react-native';
 import { formatPrice, timeAgo } from '../utils/contraints';
-import { FontAwesome6 } from '@expo/vector-icons';
+import { FontAwesome6, Ionicons } from '@expo/vector-icons';
 import { useTranslation } from 'react-i18next';
+import { useTheme } from '@/app/context/ThemeContext';
 
 export interface EmployerProps{
     user_name:string
@@ -22,11 +23,11 @@ export interface CardProps{
     payment:number
     employer_name?:string
     employer_verified?:boolean
-    Saveicon?:React.ReactNode
     Likeicon?:React.ReactNode
     setverified?:boolean
     employer?:EmployerProps
     location?:string
+    views?:number
 }
 
 const JobCard = ({
@@ -39,11 +40,11 @@ const JobCard = ({
     employer_name,
     payment,
     employer_verified,
-    Saveicon,
+    views,
     Likeicon,
     setverified = false
 }:CardProps) => {
-    const [hasImage,setHasImage] = useState(false)
+    const {isDark} = useTheme()
     const {t} = useTranslation();
 
     const truncate = (text: string, maxLength = 70) => {
@@ -54,7 +55,7 @@ const JobCard = ({
     };
 
   return (
-    <View className='bg-white rounded-2xl m-3 p-1'
+    <View className={isDark?'bg-white rounded-2xl m-3 p-1':'bg-dark rounded-2xl m-3 p-1'}
         style={{
             elevation:5,
             shadowColor:"#000",
@@ -69,22 +70,32 @@ const JobCard = ({
              resizeMode={cover_image_URL && cover_image_URL !== "null"?"cover":"contain"}
             />
         }
-        <View className='bg-white p-1 right-2 top-2 rounded-2xl absolute'>
+        <View className={isDark?'bg-white p-1 right-2 top-2 rounded-2xl absolute':'bg-dark p-1 right-2 top-2 rounded-2xl absolute'}>
             <TouchableOpacity ><Text className='text-primary'>{Likeicon}</Text></TouchableOpacity>
         </View>
-        <View className='bg-white p-1 absolute flex flex-row w-10 top-2 left-2 rounded-md items-center gap-x-1'>
+        <View className={isDark?
+            'bg-white p-1 absolute flex flex-row w-10 top-2 left-2 rounded-md items-center gap-x-1':
+            'bg-dark p-1 absolute flex flex-row w-10 top-2 left-2 rounded-md items-center gap-x-1'}>
             <FontAwesome6 name='star' size={10} color={"#f3db07"} />
-            <Text className='text-xs font-black'>{!employer_rating?"0":employer_rating}</Text>
+            <Text className={isDark?'text-xs font-black text-black':'text-xs font- text-white'}>{!employer_rating?"0":employer_rating}</Text>
+        </View>
+
+        <View className={isDark?
+            'bg-white/30 p-1 absolute flex flex-row bottom-4 right-2 rounded-md items-center gap-x-1'
+            :   
+            'p-1 absolute flex flex-row bottom-4 right-2 rounded-md items-center gap-x-1'}>
+            <Ionicons name='eye-outline' size={17} color={"#b3b1b1"} />
+            <Text className={'text-xs font-bold text-gray-400'}>{!views?"0":views} Views</Text>
         </View>
          
         <View className='px-[0.3rem] pt-8'>
-            <Text className='text-sm font-black'>{title}</Text>
+            <Text className={isDark?'text-sm text-dark font-black':'text-sm text-white font-black'}>{title}</Text>
             {/*  */}
-            <Text className='text-sm py-2 font-medium'>{truncate(description)}</Text>
+            <Text className={isDark?'text-sm py-2 font-medium text-dark':'text-sm py-2 font-medium text-white'}>{truncate(description)}</Text>
                 <View>
                 <View className='flex flex-row gap-x-3 py-2'>{
                     category?.map((category,index) =>
-                    (<Text key={index} className='py-1 px-2 bg-secondary rounded-lg text-xs'>{t(category)}</Text>))}</View>
+                    (<Text key={index} className={isDark?'py-1 px-2 bg-secondary text-black rounded-lg text-xs':'py-1 px-2 bg-primary/50 text-white rounded-lg text-xs'}>{t(category)}</Text>))}</View>
                 </View>
             <Text className='text-sm font-bold text-gray-400'>{formatPrice(payment)} XAF</Text>
             <View className='flex flex-row justify-between items-center'>

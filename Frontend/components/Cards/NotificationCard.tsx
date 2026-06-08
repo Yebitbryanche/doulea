@@ -2,6 +2,7 @@ import React from "react";
 import { View, Text, TouchableOpacity } from "react-native";
 import { Entypo, Feather, Ionicons } from "@expo/vector-icons";
 import { timeAgo } from "../utils/contraints";
+import { useTheme } from "@/app/context/ThemeContext";
 
 interface NotificationCardProps {
   title: string;
@@ -22,11 +23,12 @@ const NotificationCard = ({
   onClose,
   onPress,
 }: NotificationCardProps) => {
+  const {isDark} = useTheme()
   return (
     <TouchableOpacity
       activeOpacity={0.9}
       onPress={onPress}
-      className="bg-white mx-3 my-2 p-4 rounded-3xl border border-gray-100"
+      className={isDark?"bg-white mx-3 my-2 p-4 rounded-3xl border border-gray-100":"bg-dark mx-3 my-2 p-4 rounded-3xl border border-gray-800"}
       style={{
         shadowColor: "#000",
         shadowOffset: { width: 0, height: 0 },
@@ -61,7 +63,7 @@ const NotificationCard = ({
 
             <View className="ml-3 flex-1">
               <Text
-                className="text-gray-900 font-bold text-base"
+                className={isDark?"text-gray-900 font-bold text-base":"text-white font-bold text-base"}
                 numberOfLines={1}
               >
                 {title}
@@ -77,7 +79,7 @@ const NotificationCard = ({
 
           {/* Message */}
           <Text
-            className="text-gray-600 leading-5 text-sm"
+            className={isDark?"text-gray-600 leading-5 text-sm":"text-white leading-5 text-sm"}
             numberOfLines={3}
           >
             {message}
@@ -87,7 +89,7 @@ const NotificationCard = ({
         {/* Close Button */}
         <TouchableOpacity
           onPress={onClose}
-          className="w-8 h-8 rounded-full bg-gray-100 items-center justify-center"
+          className={isDark?"w-8 h-8 rounded-full bg-gray-100 items-center justify-center":"w-8 h-8 rounded-full bg-dark items-center justify-center"}
         >
           <Ionicons
             name="close"

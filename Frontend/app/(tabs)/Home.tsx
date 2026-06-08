@@ -14,6 +14,8 @@ import images from '@/types/images';
 import DefaultLoader from '@/components/Loader/defaultLoader';
 import { Ionicons } from '@expo/vector-icons';
 import { useTranslation } from 'react-i18next';
+import { view_count } from '@/components/requests/requests';
+import { useTheme } from '../context/ThemeContext';
 
 
 const Home = () => {
@@ -25,10 +27,11 @@ const Home = () => {
     const [hasMore, setHasMore] = useState(true)
     const { toggleLike, isLiked } = useLike()
     const {user} = useAuth()
+    const {isDark} = useTheme()
     const {t} = useTranslation()
     const LIMIT = 10;
     const filters = ["recent", 'nearby',"popular","recommended"]
-    const [activeFilter, setActiveFilter] = useState("Recent")
+    const [activeFilter, setActiveFilter] = useState("recent")
 
 
 const handleFilter = async (filter: string) => {
@@ -47,14 +50,14 @@ const handleFilter = async (filter: string) => {
   }
 
   // Popular
-  // if (filter === "Popular") {
-  //   const updatedJobs = [...jobs].sort(
-  //     (a, b) => (b.likes ?? 0) - (a.likes ?? 0)
-  //   )
+  if (filter === "Popular") {
+    const updatedJobs = [...jobs].sort(
+      (a, b) => (b.views ?? 0) - (a.views ?? 0)
+    )
 
-  //   setFilteredJobs(updatedJobs)
-  //   return
-  // }
+    setFilteredJobs(updatedJobs)
+    return
+  }
 
   // Near by
   if (filter === "nearby") {
@@ -114,6 +117,7 @@ const handleFilter = async (filter: string) => {
       return(
         <TouchableOpacity
         onPress={() => {
+          view_count(item.id)
           router.push({
             pathname:"/pages/job/[id]",
             params:{id:String(item.id)}
@@ -131,7 +135,7 @@ const handleFilter = async (filter: string) => {
             employer_name={item.employer?.user_name}
             employer_verified={item.employer?.is_verified}
             created_at={item.created_at}
-            Saveicon={<Fontisto name="favorite" size={20} color="#235347" />}
+            views={item.views}
             Likeicon={
               isLiked(item.id)?
                 <MaterialIcons 
@@ -183,17 +187,20 @@ const getJobs = async () => {
     },[])
 
   return (
-    <SafeAreaView className='flex flex-1 flex-col bg-white'>
+    <SafeAreaView className={isDark?'flex flex-1 flex-col bg-white':'flex flex-1 flex-col bg-back'}>
       <View className='flex flex-col items-center'>
         <View className='w-full flex flex-row justify-between p-4 items-center'>
-          <Ionicons name="settings-outline" size={24} color="#6B7280" onPress={() => {router.push('/pages/Settings')}}/>
+          {isDark?
+          <Ionicons name="settings-outline" size={24} color="#6B7280" onPress={() => {router.push('/pages/Settings')}}/>:
+          <Ionicons name="settings-outline" size={24} color="#ffffff" onPress={() => {router.push('/pages/Settings')}}/>
+          }
           <TextInput
             placeholder={t('Search')}
             placeholderTextColor={'gray'}
             className='border-b-2 border-muted w-[190px]'
             value={searchQuery}
             onChangeText={handleSearch}/>
-          <Feather name="search" size={24} color="#6B7280"/>
+          {isDark?<Feather name="search" size={24} color="#6B7280"/>:<Feather name="search" size={24} color="#ffffff"/>}
         </View>
         <FlatList
         contentContainerStyle={{display:"flex", gap:30, padding:10}}

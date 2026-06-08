@@ -10,7 +10,8 @@ module.exports = {
         secondary: "#EFF6FF",   // soft blue background
         accent: "#fffbe0",      // green (success / hiring)
         dark: "#111827",        // text
-        muted: "#6B7280"        // secondary text
+        muted: "#6B7280",
+        back: "#0f1a31"        // secondary text
       }
     },
   },

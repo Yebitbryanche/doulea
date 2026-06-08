@@ -6,11 +6,12 @@ import { Image } from "react-native";
 import { useAuth } from "../context/AuthContext";
 import { router } from "expo-router";
 import { useTranslation } from "react-i18next";
+import { useTheme } from "../context/ThemeContext";
 
 const Settings = () => {
   const { user, logout } = useAuth();
   const {t} = useTranslation()
-  const [darkMode, setDarkMode] = React.useState(false);
+  const {toggleTheme, isDark} = useTheme()
   const [logoutVisible, setLogoutVisible] = React.useState(false);
 
   const Item = ({ icon, label, onPress, right }: any) => (
@@ -20,14 +21,21 @@ const Settings = () => {
     >
       <View className="flex-row items-center gap-x-3">
         {icon}
-        <Text className="text-gray-800 text-base">{label}</Text>
+        <Text className={
+          isDark?
+            "text-gray-800 text-base"
+            :
+            "text-white"}>{label}</Text>
       </View>
-      {right ? right : <Ionicons name="chevron-forward" size={18} color="#999" />}
+      {right ? right : <Ionicons name="chevron-forward" size={18} color={isDark?"#e7e9ec":"#999"} />}
     </TouchableOpacity>
   );
 
   const Section = ({ title, children }: any) => (
-    <View className="bg-white mx-4 mt-4 rounded-2xl px-4"
+    <View className={
+      isDark?
+        `bg-white mx-4 mt-4 rounded-2xl px-4`:
+        `bg-dark  mx-4 mt-4 rounded-2xl px-4`}
       style={{
         shadowColor: "#000",
         shadowOffset: { width: 0, height: 0 },
@@ -35,17 +43,24 @@ const Settings = () => {
         shadowRadius: 10,
         elevation: 2,
       }}>
-      <Text className="text-primary font-black text-sm mt-3">{title}</Text>
+      <Text className={"text-primary font-black text-sm mt-3"}>{title}</Text>
       {children}
     </View>
   );
 
   return (
-    <SafeAreaView className="flex-1 bg-white">
+    <SafeAreaView className={
+      isDark?
+        "flex-1 bg-white"
+      :
+        "flex-1 bg-back"}>
       <ScrollView showsVerticalScrollIndicator={false}>
 
         {/* 👤 PROFILE HEADER */}
-        <View className="bg-white px-5 py-6 flex-row items-center gap-x-4">
+      <View className={isDark?
+        "bg-white px-5 py-6 flex-row items-center gap-x-4"
+        :
+        "bg-dark px-5 py-6 flex-row items-center gap-x-4"}>
           <Image
             className="w-16 h-16 rounded-full"
             source={
@@ -55,7 +70,10 @@ const Settings = () => {
             }
           />
           <View>
-            <Text className="text-lg font-bold text-gray-800">
+            <Text className={isDark?
+              "text-lg font-bold text-gray-800"
+              :
+              "text-lg font-bold text-white"}>
               {user?.user_name || "User"}
             </Text>
             <Text className="text-gray-400 text-sm">{user?.email}</Text>
@@ -72,79 +90,79 @@ const Settings = () => {
           </View>
         </View>
 
-        {/* 👤 ACCOUNT */}
+        {/*ACCOUNT */}
         <Section title={t("Account")}>
           <Item
-            icon={<Feather name="user" size={20} />}
+            icon={isDark?<Feather name="user" size={20} color={'black'}/>:<Feather name="user" size={20} color={'white'}/>}
             label={t("Edit Profile")}
             onPress={() => router.push("/pages/editProfile")}
           />
           <Item
-            icon={<Ionicons name="language" size={20} />}
+            icon={isDark?<Ionicons name="language" size={20} color={"black"} />:<Ionicons name="language" size={20} color={"white"} />}
             label={t("Language")}
             onPress={() => router.push("/pages/LanguageSwitch")}
           />
           <Item
-            icon={<Ionicons name="notifications-outline" size={20} />}
+            icon={isDark?<Ionicons name="notifications-outline" size={20} color={"black"}/>:<Ionicons name="notifications-outline" size={20} color={"white"}/>}
             label={t("Notifications")}
             onPress={() => router.push("/pages/myPosts")}
           />
         </Section>
 
-        {/* 💼 APP */}
+        {/*APP */}
         { user?.role === 'employer' &&
         <Section title={t("App")}>
           <Item
-            icon={<Ionicons name="grid-outline" size={20} />}
+            icon={isDark?<Ionicons name="grid-outline" size={20} color={'black'}/>:<Ionicons name="grid-outline" size={20} color={'white'}/>}
             label={t("Dashboard")}
             onPress={() => router.push("/pages/dashboard")}
           />
           <Item
-            icon={<Ionicons name="analytics-outline" size={20} />}
+            icon={isDark?<Ionicons name="analytics-outline" size={20} color={'black'}/>:<Ionicons name="analytics-outline" size={20} color={'white'}/>}
             label={t("Analytics")}
             onPress={() => router.push("/pages/analysis")}
           />
           <Item
-            icon={<MaterialIcons name="work-outline" size={20} />}
+            icon={isDark?<MaterialIcons name="work-outline" size={20} color={'black'} />:<MaterialIcons name="work-outline" size={20} color={'white'} />}
             label={t("My Jobs")}
             onPress={() => router.push("/pages/myPosts")}
           />
         </Section>}
 
-        {/* 💳 PAYMENTS */}
+        {/*PAYMENTS */}
         <Section title={t("Payments")}>
           <Item
-            icon={<Ionicons name="card-outline" size={20} />}
+            icon={isDark?<Ionicons name="card-outline" size={20} color={'black'} />:<Ionicons name="card-outline" size={20} color={'white'} />}
             label={t("Payment Methods")}
             onPress={() => {router.push('/pages/transactions/payments')}}
           />
           <Item
-            icon={<Ionicons name="receipt-outline" size={20} />}
+            icon={isDark?<Ionicons name="receipt-outline" size={20} color={'black'} />:<Ionicons name="receipt-outline" size={20} color={'white'} />}
             label={t("Transactions")}
             onPress={() => {router.push('/pages/transactions/transactionDetails')}}
           />
         </Section>
 
-        {/* ⚙️ SYSTEM */}
+        {/*SYSTEM */}
         <Section title={t("Preferences")}>
           <Item
-            icon={<Ionicons name="moon-outline" size={20} />}
-            label={t("Dark Mode")}
+            icon={isDark?<Ionicons name="moon-outline" size={20} color={'black'} />:<Ionicons name="sunny-outline" size={20} color={'white'} />}
+            label={isDark?t("Dark Mode"):t("light_mode")}
             right={
               <Switch
-                value={darkMode}
-                onValueChange={setDarkMode}
+                value={!isDark}
+                onValueChange={toggleTheme} // toggle theme
               />
             }
           />
           <Item
-            icon={<Ionicons name="help-circle-outline" size={20} />}
+            icon={isDark?<Ionicons name="help-circle-outline" size={20} color={'black'}/>:<Ionicons name="help-circle-outline" size={20} color={'white'}/>}
             label={t("Help & Support")}
             onPress={() => {}}
           />
         </Section>
 
-        {/* 🚪 LOGOUT */} 
+        {/*LOGOUT */} 
         <View className="mx-4 mt-6">
           <TouchableOpacity
             onPress={() => setLogoutVisible(true)}
@@ -169,7 +187,7 @@ const Settings = () => {
         }}
       >
         <View
-          className="bg-white w-[85%] rounded-3xl p-6"
+          className={isDark?"bg-white w-[85%] rounded-3xl p-6":"bg-dark w-[85%] rounded-3xl p-6"}
           style={{
             shadowColor: "#000",
             shadowOffset: { width: 0, height: 4 },
@@ -191,7 +209,7 @@ const Settings = () => {
           </View>
 
           {/* TITLE */}
-          <Text className="text-xl font-black text-center text-gray-800">
+          <Text className={isDark?"text-xl font-black text-center text-gray-800":"text-xl font-black text-center text-gray-200"}>
             {t("Logout")}
           </Text>
 

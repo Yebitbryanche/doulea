@@ -1,8 +1,10 @@
+import { useTheme } from "@/app/context/ThemeContext";
 import React, { useEffect, useRef } from "react";
 import { View, Animated, Easing ,Text} from "react-native";
 
 const Bar = ({ delay }: { delay: number }) => {
   const height = useRef(new Animated.Value(32)).current;
+
 
   useEffect(() => {
     const animate = () => {
@@ -40,8 +42,9 @@ const Bar = ({ delay }: { delay: number }) => {
 };
 
 const DefaultLoader = () => {
+  const {isDark} = useTheme()
   return (
-    <View className="absolute inset-0 justify-center items-center bg-white">
+    <View className={isDark?"absolute inset-0 justify-center items-center bg-white":"absolute inset-0 justify-center items-center bg-back"}>
       <View style={{ flexDirection: "row", alignItems: "flex-end" }}>
         <Bar delay={0} />
         <Bar delay={150} />

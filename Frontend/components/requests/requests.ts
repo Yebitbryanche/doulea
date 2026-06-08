@@ -220,3 +220,15 @@ export const clear_all = async (user_id:string | undefined) => {
     }
 }
 
+export const view_count = async (job_id:string) => {
+    try{
+        const response = await apiClient.post(`/job/view_count/${job_id}`)
+        console.log(response.data)
+        return response.data
+    }
+    catch(error:any){
+        console.error(error.response.data);
+        throw error;
+    }
+
+} 

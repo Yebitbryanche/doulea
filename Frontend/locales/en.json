@@ -39,5 +39,6 @@
   "are_you_sure_you_want_to_logout_from_your_account_?":"Are you sure you want to logout from your account?",
   "unverified":"Unverified",
   "verified":"Verified",
-  "delete":"Delete"
+  "delete":"Delete",
+  "light_mode":"Light Mode"
 }

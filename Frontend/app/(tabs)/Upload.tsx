@@ -18,12 +18,14 @@ import Toast from "@/components/Toast";
 import { Ionicons } from "@expo/vector-icons";
 import { useAuth } from "../context/AuthContext";
 import images from "@/types/images";
+import { useTheme } from "../context/ThemeContext";
 
 
 const Uploads = () => {
   const [title, setTitle] = useState("");
   const {user} = useAuth()
   const {width, height} = Dimensions.get("window")
+  const {isDark} = useTheme()
   const [description, setDescription] = useState("");
   const [location, setLocation] = useState("");
   const [payment, setPayment] = useState("");
@@ -82,7 +84,7 @@ const Uploads = () => {
   };
 
   return (
-    <SafeAreaView className="flex-1 bg-white">
+    <SafeAreaView className={isDark?"flex-1 bg-white":"flex-1 bg-back"}>
       <KeyboardAvoidingView
         style={{ flex: 1 }}
         behavior={Platform.OS === "ios" ? "padding" : "height"}
@@ -90,15 +92,15 @@ const Uploads = () => {
         {user?.role === 'employer' ?<ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingBottom: 120 }}>
           
           {/* 🔥 HEADER */}
-          <View className="px-5 py-4 bg-white mx-4 rounded-md">
-            <Text className="text-2xl font-bold text-gray-800">Post a Job</Text>
-            <Text className="text-gray-400 mt-1">
+          <View className={isDark?"px-5 py-4 bg-white mx-4 rounded-md":"px-5 py-4 bg-dark mx-4 rounded-md"}>
+            <Text className={isDark?"text-2xl font-bold text-gray-800":"text-2xl font-bold text-gray-200"}>Post a Job</Text>
+            <Text className={isDark?"text-gray-400 mt-1":"text-white mt-1"}>
               Fill the details to find the right candidate
             </Text>
           </View>
 
           {/* 🧾 FORM CARD */}
-          <View className="mx-4 mt-4 bg-white p-5 rounded-2xl"
+          <View className={isDark?"mx-4 mt-4 bg-white p-5 rounded-2xl":"mx-4 mt-4 bg-dark p-5 rounded-2xl"}
           style={{
             shadowColor: "#000",
             shadowOffset: { width: 0, height: 0 },
@@ -108,50 +110,54 @@ const Uploads = () => {
           }}      >
             
             {/* Title */}
-            <Text className="font-medium mb-1">Job Title</Text>
+            <Text className={isDark?"font-medium mb-1 text-dark":"font-medium mb-1 text-white"}>Job Title</Text>
             <TextInput
-              className="border border-gray-200 rounded-xl p-3 mb-4"
+              className={isDark?"border border-gray-200 rounded-xl p-3 mb-4 text-dark":"border text-white border-gray-700 rounded-xl p-3 mb-4"}
               placeholder="e.g. Frontend Developer"
+              placeholderTextColor={isDark?"#b0b0b0":"#fff"}
               value={title}
               onChangeText={setTitle}
             />
 
             {/* Description */}
-            <Text className="font-medium mb-1">Description</Text>
+            <Text className={isDark?"font-medium mb-1 text-dark":"font-medium mb-1 text-white"}>Description</Text>
             <TextInput
-              className="border border-gray-200 rounded-xl p-3 h-28 mb-4"
+              className={isDark?"border border-gray-200 rounded-xl p-3 h-28 mb-4 text-black":"border border-gray-700 rounded-xl text-white p-3 h-28 mb-4"}
               multiline
               textAlignVertical="top"
               placeholder="Describe the job..."
+              placeholderTextColor={isDark?"#b0b0b0":"#fff"}
               value={description}
               onChangeText={setDescription}
             />
 
             {/* Location */}
-            <Text className="font-medium mb-1">Location</Text>
+            <Text className={isDark?"font-medium mb-1 text-dark":"font-medium mb-1 text-white"}>Location</Text>
             <TextInput
-              className="border border-gray-200 rounded-xl p-3 mb-4"
+              className={isDark?"border border-gray-200 rounded-xl p-3 mb-4 text-dark":"border text-white border-gray-700 rounded-xl p-3 mb-4"}
               placeholder="e.g. Douala"
+              placeholderTextColor={isDark?"#b0b0b0":"#fff"}
               value={location}
               onChangeText={setLocation}
             />
 
             {/* Payment */}
-            <Text className="font-medium mb-1">Payment (XAF)</Text>
+            <Text className={isDark?"font-medium mb-1 text-dark":"font-medium mb-1 text-white"}>Payment (XAF)</Text>
             <TextInput
-              className="border border-gray-200 rounded-xl p-3 mb-4"
+              className={isDark?"border border-gray-200 rounded-xl p-3 mb-4 text-dark":"border text-white border-gray-700 rounded-xl p-3 mb-4"}
               placeholder="e.g. 150000"
+              placeholderTextColor={isDark?"#b0b0b0":"#fff"}
               keyboardType="numeric"
               value={payment}
               onChangeText={setPayment}
             />
 
             {/* Categories */}
-            <Text className="font-medium mb-2">Categories</Text>
+            <Text className={isDark?"font-medium mb-1 text-dark":"font-medium mb-1 text-white"}>Categories</Text>
 
             <TouchableOpacity
               onPress={() => setModalVisible(true)}
-              className="border border-gray-200 rounded-xl p-4"
+              className={isDark?"border border-gray-200 rounded-xl p-4":"border border-gray-700 rounded-xl p-4"}
             >
               {selectedCategories.length > 0 ? (
                 <View className="flex-row flex-wrap gap-2">
@@ -176,7 +182,7 @@ const Uploads = () => {
         }
 
         {/* 🚀 STICKY BUTTON */}
-        <View className="absolute bottom-0 w-full bg-white px-5 border-t border-gray-200">
+        <View className={isDark?"absolute bottom-14 w-full bg-white px-5 border-t border-gray-200":"absolute bottom-14 w-full bg-back px-5"}>
           <TouchableOpacity
             onPress={ user?.role === 'employer'?handleUpload: () => router.push('/Auth/Register')}
             className="bg-primary py-4 rounded-xl items-center"
@@ -188,12 +194,12 @@ const Uploads = () => {
         {/* 🏷 MODAL */}
         <Modal visible={modalVisible} animationType="slide" transparent>
           <View className="flex-1 justify-end bg-black/40">
-            <View className="bg-white p-5 rounded-t-3xl">
+            <View className={isDark?"bg-white p-5 rounded-t-3xl":"bg-dark p-5 rounded-t-3xl"}>
               
               <View className="flex-row justify-between items-center mb-4">
-                <Text className="text-lg font-bold">Select Categories</Text>
+                <Text className={isDark?"text-lg font-bold text-dark":"text-lg font-bold text-white"}>Select Categories</Text>
                 <TouchableOpacity onPress={() => setModalVisible(false)}>
-                  <Ionicons name="close" size={24} />
+                  {isDark?<Ionicons name="close" size={24} color={'black'}/>:<Ionicons name="close" size={24} color={'white'}/>}
                 </TouchableOpacity>
               </View>
 
@@ -211,7 +217,7 @@ const Uploads = () => {
                           : "border-gray-300"
                       }`}
                     >
-                      <Text className={selected ? "text-white" : "text-black"}>
+                      <Text className={selected ? "text-white" :isDark ? "text-black": "text-white"}>
                         {category}
                       </Text>
                     </TouchableOpacity>

@@ -5,19 +5,20 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { useAuth } from "../context/AuthContext";
 import { JobDetailProps } from "@/types/other";
 import { Image } from "react-native";
-import { formatedDate } from "@/components/utils/contraints";
 import { Entypo, Ionicons } from "@expo/vector-icons";
 import DefaultLoader from "@/components/Loader/defaultLoader";
 import images from "@/types/images";
 import { useLike } from "../context/LikeContext";
 import { router, useFocusEffect } from "expo-router";
+import { useTheme } from "../context/ThemeContext";
 
 
 const Favorites = () => {
   const { user, fetchUser } = useAuth();
   const [favs, setFavs] = useState<JobDetailProps[]>([]);
   const [isLoading, setIsLoading] = useState(false);
-  const {unlike} = useLike()
+  const {unlike} = useLike();
+  const {isDark} = useTheme()
   const { width } = useWindowDimensions();
 
 
@@ -59,10 +60,10 @@ useFocusEffect(
 );
 
   return (
-    <SafeAreaView className="flex-1 bg-white">
+    <SafeAreaView className={isDark?"flex-1 bg-white":"flex-1 bg-back"}>
       <FlatList
         ListHeaderComponent={
-          <View className="px-4 py-4 flex-row items-center justify-between bg-white">
+          <View className={isDark?"px-4 py-4 flex-row items-center justify-between bg-white":"px-4 py-4 flex-row items-center justify-between bg-dark"}>
             <Image
               className="w-12 h-12 rounded-full"
               source={
@@ -72,7 +73,7 @@ useFocusEffect(
               }
             />
             <View>
-              <Text className="text-xl font-bold text-gray-800">
+              <Text className={isDark?"text-xl font-bold text-gray-800":"text-xl font-bold text-white"}>
                 Your Favorites
               </Text>
             </View>
@@ -112,7 +113,7 @@ useFocusEffect(
             {/* Favorite Icon */}
             <TouchableOpacity 
               onPress={() => handleUnlike(item.id)}
-              className="absolute top-3 right-3 bg-white p-2 z-50 rounded-full" >
+              className={isDark?"absolute top-3 right-3 bg-white p-2 z-50 rounded-full":"absolute top-3 right-3 bg-dark p-2 z-50 rounded-full"} >
               <Ionicons name="heart" size={16} color="#ea306e" />
             </TouchableOpacity>
 
@@ -150,7 +151,7 @@ useFocusEffect(
                 {item.category?.map((cat, index) => (
                   <View
                     key={index}
-                    className="bg-white px-3 py-1 rounded-full"
+                    className={isDark?"bg-white px-3 py-1 rounded-full":"bg-dark/50 px-3 py-1 rounded-full"}
                   >
                     <Text className="text-primary text-xs">{cat}</Text>
                   </View>

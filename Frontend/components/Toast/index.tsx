@@ -1,3 +1,4 @@
+import { Ionicons } from "@expo/vector-icons";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
 import React, { useEffect, useState } from "react";
 import { Text, Animated } from "react-native";
@@ -53,12 +54,12 @@ const Toast = ({
   return (
     <Animated.View
       style={{ opacity: fadeAnim }}
-      className={`absolute w-[94%] bottom-12 self-center px-5 py-3 flex flex-row gap-x-5 rounded-lg z-50 ${colors[type]}`}
+      className={`absolute w-[95%] top-12 self-center px-3 py-5 flex flex-row gap-x-5 rounded-lg z-50 ${colors[type]}`}
     >
-        {type === 'error'? <Text><FontAwesome name="warning" size={23} color={'white'}/></Text>:
+        {type === 'error'? <Text><Ionicons name="warning-outline" size={23} color={'white'}/></Text>:
         type === 'success'?<Text><FontAwesome name="check" size={23} color={'white'}/></Text>:
-        <Text><FontAwesome name="info" size={23} color={'white'}/></Text>}
-      <Text className="text-white text-md">{message}</Text>
+        <Text><Ionicons name="information-circle-outline" size={23} color={'white'}/></Text>}
+      <Text className="text-white text-sm">{message}</Text>
     </Animated.View>
   );
 };

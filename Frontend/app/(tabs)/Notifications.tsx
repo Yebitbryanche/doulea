@@ -1,15 +1,17 @@
 import NotificationCard from '@/components/Cards/NotificationCard';
 import React,{useEffect, useState} from 'react';
-import { View, Text, Image, FlatList, Touchable, TouchableOpacity } from 'react-native';
+import { View, Text, Image, FlatList, TouchableOpacity } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useAuth } from '../context/AuthContext';
 import { clear_all, deleteANotification, getNotifications, readNotification } from '@/components/requests/requests';
 import { Notifications_type } from '@/types/other';
 import DefaultLoader from '@/components/Loader/defaultLoader';
 import images from '@/types/images';
+import { useTheme } from '../context/ThemeContext';
 
 const Notifications = () => {
   const {user, fetchUser} = useAuth()
+  const {isDark} = useTheme()
   const [notifications, setNotifications] = useState<Notifications_type[]>([])
   const [loading, setLoading] = useState(false)
   const limit = 10;
@@ -116,8 +118,8 @@ const handle_clear_allNotifications = async () => {
   },[])
 
   return (
-    <SafeAreaView style={{flex:1, backgroundColor:"#fff"}}>
-          <View className="px-4 py-4 flex-row items-center justify-between bg-white">
+    <SafeAreaView className={isDark?'flex-1 bg-white':'flex-1 bg-back'}>
+          <View className={isDark?"px-4 py-4 flex-row items-center justify-between bg-white":"px-4 py-4 flex-row items-center justify-between bg-dark"}>
             <Image
               className="w-12 h-12 rounded-full"
               source={
@@ -127,7 +129,7 @@ const handle_clear_allNotifications = async () => {
               }
             />
             <View>
-              <Text className="text-xl font-bold text-gray-800">
+              <Text className={isDark?"text-xl font-bold text-gray-800":"text-xl font-bold text-white"}>
                 Notifications
               </Text>
             </View>

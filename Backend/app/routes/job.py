@@ -151,6 +151,7 @@ def get_jobs(
             "category": job.category,
             "cover_image_URL": job.cover_image_URL,
             "created_at": job.created_at,
+            "views":job.view_count,
             "employer_rating":average_rating,
             "employer": employer
         })
@@ -374,10 +375,10 @@ def recommend_jobs(user_id: str, session: SessionDep):
         if job.category:
             if isinstance(job.category, list):
                 if any(cat in preferred_categories for cat in job.category):
-                    score += 0.2
+                    score += 0.25
             else:
                 if job.category in preferred_categories:
-                    score += 0.2
+                    score += 0.25
 
         # -------- LOCATION BOOST --------
         if job.location in preferred_locations:
@@ -475,3 +476,24 @@ def delete_job(job_id: str, session: SessionDep):
     session.commit()
 
     return {"message": "delete successful"}
+
+#_________________________
+# past count
+# route : /job/view_count/user_id
+#--------------------------
+
+@router.post('/view_count/{job_id}')
+def add_view(job_id:str, session:SessionDep):
+    job = session.exec(select(Job).where(Job.id == job_id)).first()
+
+    if not job:
+        raise HTTPException(status_code=404, detail="job does not exist")
+    job.view_count = job.view_count + 1
+    
+    session.add(job)
+    session.commit()
+
+    return {
+    "message": "view count updated",
+    "view_count": job.view_count
+    }
