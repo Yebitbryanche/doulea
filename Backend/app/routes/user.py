@@ -217,7 +217,18 @@ def write_review(
     session.refresh(review_db)
     return {"message": "Review submitted successfully", "review": review}
 
-
+#get a users credentials read only
+# route /users/user/user
+#--------------------------
+@router.get('/user/{user_id}')
+def get_user(user_id:str, session:SessionDep):
+    user = session.exec(select(User).where(User.id == user_id)).first()
+    if not user:
+        raise HTTPException(
+            detail='user not found',
+            status_code=404
+        )
+    return user
 
 #--------------------------
 #get Employer and reviews
@@ -232,17 +243,17 @@ def get_employer_reviews(
     limit: int = 5,
     offset: int = 0
 ):
-    # 1️⃣ Fetch employer info
+    # 1️ Fetch employer info
     employer = session.get(User, user_id)
     if not employer:
         raise HTTPException(status_code=404, detail="Employer not found")
 
-    # 2️⃣ Fetch jobs/posts assigned to this employer
+    # 2️ Fetch jobs/posts assigned to this employer
     jobs = session.exec(
         select(Job).where(Job.employer_id == user_id)
     ).all()
 
-    # 3️⃣ Fetch reviews for this employer
+    # 3 Fetch reviews for this employer
     reviews_query = (
         select(EmployerRating, User)
         .join(User, EmployerRating.job_seeker_id == User.id)  # user who wrote review
@@ -268,7 +279,7 @@ def get_employer_reviews(
             }
         })
 
-    # 4️⃣ Calculate average rating
+    # 4️ Calculate average rating
     avg_rating = session.exec(
         select(func.avg(EmployerRating.rating)).where(EmployerRating.employer_id == user_id)
     ).one()
@@ -344,7 +355,7 @@ def InitaitePayment(session:SessionDep, newPay:MakePayment):
         reference=reference,
         status="pending"
     )
-#payment initiated notification message
+##### payment initiated notification message
     payment_initiated = Notification(
         user_id=user.id,
         title="Payment",
@@ -395,7 +406,7 @@ async def notchpay_webhook(request: Request, session: SessionDep):
             if user:
                 user.has_paid = True
                 session.add(user)
-                #payment completed notification message
+                #### payment completed notification message
                 payment_complete = Notification(
                     user_id=user.id,
                     title="Payment",
