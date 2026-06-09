@@ -153,7 +153,7 @@ useFocusEffect(
                     key={index}
                     className={isDark?"bg-white px-3 py-1 rounded-full":"bg-dark/50 px-3 py-1 rounded-full"}
                   >
-                    <Text className="text-primary text-xs">{cat}</Text>
+                    <Text className={isDark?"text-primary text-xs":"text-gray-200 text-xs"}>{cat}</Text>
                   </View>
                 ))}
               </View>
