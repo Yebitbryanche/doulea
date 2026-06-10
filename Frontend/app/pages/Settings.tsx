@@ -158,7 +158,7 @@ const Settings = () => {
           <Item
             icon={isDark?<Ionicons name="help-circle-outline" size={20} color={'black'}/>:<Ionicons name="help-circle-outline" size={20} color={'white'}/>}
             label={t("Help & Support")}
-            onPress={() => {}}
+            onPress={() => {router.push('/pages/Help_and_Support')}}
           />
         </Section>
 

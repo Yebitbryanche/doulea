@@ -1,15 +1,24 @@
 {
   "expo": {
-    "name": "Doulea",
-    "slug": "Doulea",
+    "name": "Douleia",
+    "slug": "Douleia",
     "version": "1.0.0",
+    "splash": {
+      "image": "./assets/splash.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#FFFFFF"
+    },
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
     "scheme": "doulea",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.bryan237.Doulea",
+      "infoPlist": {
+        "ITSAppUsesNonExemptEncryption": false
+      }
     },
     "android": {
       "adaptiveIcon": {

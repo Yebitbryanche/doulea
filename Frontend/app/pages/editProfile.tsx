@@ -11,6 +11,7 @@ import DefaultLoader from '@/components/Loader/defaultLoader';
 import { router } from 'expo-router';
 import { useUpload } from '../context/Uploadcontext';
 import { useTranslation } from 'react-i18next';
+import { useTheme } from '../context/ThemeContext';
 
 const profile = () => {
     const {user,fetchUser} = useAuth()
@@ -25,6 +26,7 @@ const profile = () => {
     const [type, setType] = useState<ToastType>()
     const [visible, setvisible] = useState(false)
     const {uploadImage,pickImage,toastMessage,toastType,toastVisible} = useUpload()
+    const {isDark} = useTheme()
 
     const handleUploadImage = async () => {
         try{
@@ -91,14 +93,15 @@ const profile = () => {
         }
     }
   return (
-    <SafeAreaView className='bg-white flex-1'>
+    <SafeAreaView className={isDark?'bg-white flex-1':'bg-back flex-1'}>
         <KeyboardAvoidingView
         style={{flex:1}}
         behavior={Platform.OS === 'ios'?'padding':'height'}>
-            <ScrollView>
+            <ScrollView
+                showsVerticalScrollIndicator={false}>
             <View className='flex flex-col items-center p-3'>
-                <Feather name='chevron-left' size={23} className='absolute left-2 top-4' onPress={() => router.back()}/>
-                <Text className='font-bold text-2xl'>{t("Edit Profile")}</Text>
+                {isDark?<Feather name='chevron-left' size={23} className='absolute left-2 top-4' onPress={() => router.back()}/>:<Feather name='chevron-left' size={23} className='absolute left-2 top-4' color={'#fff'} onPress={() => router.back()}/>}
+                <Text className={isDark?'font-bold text-2xl text-dark':'font-bold text-2xl text-white'}>{t("Edit Profile")}</Text>
                 <View className='mt-[3rem]'>
                     <Image className="w-[100px] h-[100px] rounded-full" source={user?.profile_URL?{uri:user?.profile_URL}:require('@/assets/images/default_profile.jpg')}  resizeMode={'contain'}/>
                     <TouchableOpacity  onPress={() => handleUploadImage()} className='absolute bottom-0 right-0 bg-primary border-2 border-white p-2 rounded-full'>
@@ -106,7 +109,7 @@ const profile = () => {
                             name='camera' size={20} color={"white"}/>
                     </TouchableOpacity>
                 </View>
-                <Text className='text-sm font-semibold my-2'>{!user?.bio?"Tell us about you":user?.bio}</Text>
+                <Text className={isDark?'text-sm font-semibold my-2 text-dark':'text-sm font-semibold my-2 text-gray-100'}>{!user?.bio?"Tell us about you":user?.bio}</Text>
                 {user?.role === 'employer' &&
                 <View>
                 {user?.is_verified?

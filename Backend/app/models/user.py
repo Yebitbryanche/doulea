@@ -1,12 +1,12 @@
 from datetime import datetime
 from typing import Optional, TYPE_CHECKING
 from sqlmodel import Field, Relationship, SQLModel
-from utils.dbUtils import generate_job_id
-from schema import NotificationType, UserType
+from app.utils.dbUtils import generate_job_id
+from app.schema import NotificationType, UserType
 
 
 if TYPE_CHECKING:
-    from models.job import Job
+    from app.models.job import Job
 
 class User(SQLModel,table=True):
     __tablename__ = "user"

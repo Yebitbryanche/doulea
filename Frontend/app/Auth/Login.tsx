@@ -13,6 +13,7 @@ import apiClient from '../apiClient';
 import { useAuth } from '../context/AuthContext';
 import DefaultLoader from '@/components/Loader/defaultLoader';
 import { useTranslation } from 'react-i18next';
+import { useTheme } from '../context/ThemeContext';
 
 const Login = () => {
   const [togglePassword, setTogglePassword] = useState(false)
@@ -23,6 +24,7 @@ const Login = () => {
   const [toastMessage, setToastMessage] = useState('')
   const {fetchUser, loading} = useAuth()
   const {t} = useTranslation()
+  const {isDark} = useTheme();
 
   const authentictae_user = async () =>{
     try{
@@ -91,7 +93,7 @@ const Login = () => {
   }
 
   return (
-    <SafeAreaView className='flex-1 bg-white'>
+    <SafeAreaView className={isDark?'flex-1 bg-white':'flex-1 bg-back'}>
       <KeyboardAvoidingView
       style={{flex:1}}
       behavior={Platform.OS === "ios"?"padding":"height"}

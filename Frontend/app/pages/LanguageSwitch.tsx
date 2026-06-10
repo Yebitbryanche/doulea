@@ -8,9 +8,12 @@ import {
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useTranslation } from "react-i18next";
 import { Ionicons } from "@expo/vector-icons";
+import { useTheme } from "../context/ThemeContext";
+import { router } from "expo-router";
 
 const LanguageSwitch = () => {
   const { i18n, t } = useTranslation();
+  const {isDark} = useTheme();
   const [selectedLanguage, setSelectedLanguage] = useState(
     i18n.language || "en"
   );
@@ -21,14 +24,15 @@ const LanguageSwitch = () => {
   };
 
   return (
-    <SafeAreaView className="flex-1 bg-[#F8FAFC] px-3">
+    <SafeAreaView className={isDark?"flex-1 bg-[#F8FAF] px-3":"flex-1 bg-back px-3"}>
 
       {/* Header */}
-      <View className="mt-8 px-5 mb-10 flex flex-col items-center">
-        <Text className="text-3xl font-bold text-gray-900">
+      <View className="mt-8 px-3 mb-10 flex flex-col items-center">
+        {isDark?<Ionicons name='chevron-back' size={22} color={'#1F2937'} className="absolute left-1 top-1" onPress={() => router.back()} />:<Ionicons name='chevron-back' size={22} color={'#dedfe2'} className="absolute left-1 top-1" onPress={() => router.back()}/>}
+        <Text className={isDark?"text-3xl font-bold text-gray-900":"text-3xl font-bold text-gray-100"}>
           {t("choose a language")}
         </Text>
-        <Text className="text-gray-500 text-sm mt-2 text-base">
+        <Text className={isDark?"text-gray-500 text-sm mt-2 text-base":"text-gray-300 text-sm mt-2 text-base"}>
           {t("Select your preferred language for a better experience")}
         </Text>
       </View>

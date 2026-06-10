@@ -1,3 +1,4 @@
+import { useTheme } from '@/app/context/ThemeContext';
 import React from 'react';
 import { View, Text, TextInput, Image, TouchableOpacity, Platform } from 'react-native';
 import { KeyboardTypeOptions,InputModeOptions } from 'react-native';
@@ -27,9 +28,10 @@ const InputField = ({
   keyboardType,
   inputMode
 }: InputProps) => {
+  const {isDark} = useTheme()
   return (
     <View>
-      <Text className='font-medium'>{label}</Text>
+      <Text className={isDark?'font-medium text-dark':'text-white font-medium'}>{label}</Text>
 
       <View className="relative">
         <TextInput
@@ -40,16 +42,7 @@ const InputField = ({
           secureTextEntry={secureText && !showPassword}
           keyboardType={keyboardType}
           inputMode={inputMode}
-      className="
-    border border-gray-300
-    w-[330px]
-    h-14
-    rounded-2xl
-    px-4
-    text-base
-    pr-12
-    focus:border-primary/50
-  "
+      className={isDark?"border border-gray-300 w-[330px] h-14 rounded-2xl px-4 text-base pr-12 focus:border-primary/50":"border border-gray-500 w-[330px] h-14 rounded-2xl px-4 text-white pr-12 focus:border-primary/50"}
   style={{
     paddingVertical: Platform.OS === 'ios' ? 14 : 10,
   }}

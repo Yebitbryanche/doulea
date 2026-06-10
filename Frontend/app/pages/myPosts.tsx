@@ -11,15 +11,14 @@ import DefaultLoader from '@/components/Loader/defaultLoader';
 import images from '@/types/images';
 import RegisterButton from '@/components/Buttons/RgisterButton';
 import { useTranslation } from 'react-i18next';
+import { useTheme } from '../context/ThemeContext';
 
 const myPosts = () => {
     const [uploads,setUploads] = useState<JobDetailProps[] | undefined>([])
     const {user} = useAuth()
+    const {isDark} = useTheme()
     const {t} = useTranslation()
     const [loading,setLoading] = useState(false)
-    const [toastType, setToastType] = useState<"success" | "error" | "info">("info");
-    const [toastVisible, setToastVisible] = useState(false);
-    const [toastMessage, setToastMessage] = useState("");
     const [deleteModalVisible, setDeleteModalVisible] = useState(false);
     const [selectedItem, setSelectedItem] = useState<JobDetailProps | null>(null);
 
@@ -67,11 +66,11 @@ const myPosts = () => {
         getUploads()
     },[user?.id])
   return (
-    <SafeAreaView className='flex-1 bg-white'>
+    <SafeAreaView className={isDark?'flex-1 bg-white':'flex-1 bg-back'}>
         <ScrollView>
             <View className='flex flex--col items-center p-3 relarive'>
-                <Feather name='chevron-left' size={23} color={'#2563EB'} className='absolute left-3 top-3' onPress={() => router.back()}/>
-                <Text className='font-black text-2xl'>My Posts</Text>
+        {isDark?<Ionicons name='chevron-back' size={22} color={'#1F2937'} className="absolute left-3 top-3" onPress={() => router.back()} />:<Ionicons name='chevron-back' size={22} color={'#dedfe2'} className="absolute left-3 top-3" onPress={() => router.back()}/>}
+                <Text className={isDark?'font-black text-2xl text-dark':'font-black text-2xl text-gray-100'}>My Posts</Text>
             </View>
             <View className='p-3'>
             {uploads?.length === 0?

@@ -2,6 +2,7 @@ import React from 'react';
 import { View, Text, Image } from 'react-native';
 import { formatedDate } from '../utils/contraints';
 import { Feather } from '@expo/vector-icons';
+import { useTheme } from '@/app/context/ThemeContext';
 
 interface Props {
   cover_image_URL: string;
@@ -20,9 +21,10 @@ const EmployerJobCard = ({
   created_at,
   children,
 }: Props) => {
+  const {isDark} = useTheme();
   return (
     <View
-      className="mx-2 my-3 p-3 bg-white rounded-2xl items-center flex-row gap-x-3"
+      className={isDark?"mx-2 my-3 p-3 bg-white rounded-2xl items-center flex-row gap-x-3":"mx-2 my-3 p-3 bg-dark border border-gray-800 rounded-2xl items-center flex-row gap-x-3"}
       style={{
         shadowColor: "#000",
         shadowOffset: { width: 0, height: 3 },
@@ -45,7 +47,7 @@ const EmployerJobCard = ({
         <View className="flex-row justify-between items-start py-2">
           <Text
             numberOfLines={1}
-            className="font-bold text-base flex-1 pr-2"
+            className={isDark?"font-bold text-base flex-1 pr-2":"font-bold text-gray-100 flex-1 pr-2"}
           >
             {title}
           </Text>
@@ -57,7 +59,7 @@ const EmployerJobCard = ({
         {/* Description */}
         <Text
           numberOfLines={2}
-          className="text-sm text-gray-600 mt-1"
+          className={isDark?"text-sm text-gray-600 mt-1":"text-sm text-gray-400 mt-1"}
         >
           {description}
         </Text>

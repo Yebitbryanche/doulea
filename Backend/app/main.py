@@ -1,9 +1,9 @@
 from fastapi import FastAPI
-from models import *
-from db import create_db_and_tables
-from routes import user, job, admin
+from app.models import *
+from app.db import create_db_and_tables
+from app.routes import user, job, admin
 from fastapi.middleware.cors import CORSMiddleware
-from _config.uploadConfig import cloudinary_config
+from app._config.uploadConfig import cloudinary_config
 
 app = FastAPI()
 
