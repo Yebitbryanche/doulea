@@ -7,7 +7,7 @@ import uuid
 from sqlmodel import select, func
 from app.db import SessionDep
 from app.utils.job.upload import upload_file
-from app.models import User,EmployerRating, Payment, Notification
+from app.models.user import User,EmployerRating, Payment, Notification
 from app.models.job import Job
 from app.config import settings
 from app.schema.users import LoginRequest, MakePayment, NotchPayWebhook, NotificationType, ReviewModel, UserCreate, UserUpdate

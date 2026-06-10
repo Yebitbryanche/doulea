@@ -1,6 +1,6 @@
 from fastapi import APIRouter, HTTPException
 from sqlmodel import SQLModel, select
-from app.models import User, Notification
+from app.models.user import User, Notification
 from app.schema.job import CreateNotiification
 from app.db import SessionDep
 
