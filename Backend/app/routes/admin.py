@@ -1,8 +1,8 @@
 from fastapi import APIRouter, HTTPException
 from sqlmodel import SQLModel, select
-from models.user import User, Notification
-from schema.job import CreateNotiification
-from db import SessionDep
+from app.models.user import User, Notification
+from app.schema.job import CreateNotiification
+from app.db import SessionDep
 
 router = APIRouter(
     prefix='/admin',

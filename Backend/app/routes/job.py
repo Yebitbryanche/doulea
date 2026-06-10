@@ -1,15 +1,15 @@
 from fastapi import APIRouter, Depends, HTTPException, UploadFile, File
-from config import settings
+from app.config import settings
 from sqlmodel import delete, func, select
-from utils.job.upload import generate_embedding, upload_file
-from schema.job import JobCreate,JobUpdate, LikeRequest
-from schema.users import UserPublic
-from models.job import Job, JobLike
-from models.user import Notification, User,EmployerRating
-from db import SessionDep
+from app.utils.job.upload import generate_embedding, upload_file
+from app.schema.job import JobCreate,JobUpdate, LikeRequest
+from app.schema.users import UserPublic
+from app.models.job import Job, JobLike
+from app.models.user import Notification, User,EmployerRating
+from app.db import SessionDep
 import numpy as np
 from sklearn.metrics.pairwise import cosine_similarity
-from utils.userUtills import get_current_user
+from app.utils.userUtills import get_current_user
 
 router = APIRouter(
     prefix='/job',

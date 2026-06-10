@@ -1,7 +1,7 @@
 from typing import Annotated
 from sqlmodel import create_engine,SQLModel, Session
 from fastapi import Depends
-from config import settings
+from app.config import settings
 
 
 db_url = settings.DB_URL

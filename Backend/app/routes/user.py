@@ -5,13 +5,13 @@ from fastapi.responses import RedirectResponse
 import requests
 import uuid
 from sqlmodel import select, func
-from db import SessionDep
-from utils.job.upload import upload_file
-from models.user import User,EmployerRating, Payment, Notification
-from models.job import Job
-from config import settings
-from schema.users import LoginRequest, MakePayment, NotchPayWebhook, NotificationType, ReviewModel, UserCreate, UserUpdate
-from utils.userUtills import hash_password, authenticate_user, create_access_token,get_current_user,send_document_email
+from app.db import SessionDep
+from app.utils.job.upload import upload_file
+from app.models.user import User,EmployerRating, Payment, Notification
+from app.models.job import Job
+from app.config import settings
+from app.schema.users import LoginRequest, MakePayment, NotchPayWebhook, NotificationType, ReviewModel, UserCreate, UserUpdate
+from app.utils.userUtills import hash_password, authenticate_user, create_access_token,get_current_user,send_document_email
 
 
 router = APIRouter(

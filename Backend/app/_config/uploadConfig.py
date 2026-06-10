@@ -1,5 +1,5 @@
 import cloudinary
-from config import settings
+from app.config import settings
 
 cloudinary_config = cloudinary.config( 
   cloud_name = settings.CLOUD_NAME, 
