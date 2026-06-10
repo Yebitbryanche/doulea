@@ -1,8 +1,8 @@
 from datetime import datetime
 from typing import Optional, TYPE_CHECKING
 from sqlmodel import Field, Relationship, SQLModel
-from app.utils.dbUtils import generate_job_id
-from app.schema.users import NotificationType, UserType
+from utils.dbUtils import generate_job_id
+from schema.users import NotificationType, UserType
 
 
 if TYPE_CHECKING:

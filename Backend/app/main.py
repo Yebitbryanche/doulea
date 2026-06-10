@@ -1,10 +1,10 @@
 from fastapi import FastAPI
-from app.models.user import User, EmployerRating, Subscription, Payment, Notification
-from app.models.job import Job, JobLike
-from app.db import create_db_and_tables
-from app.routes import user, job, admin
+from models.user import User, EmployerRating, Subscription, Payment, Notification
+from models.job import Job, JobLike
+from db import create_db_and_tables
+from routes import user, job, admin
 from fastapi.middleware.cors import CORSMiddleware
-from app._config.uploadConfig import cloudinary_config
+from _config.uploadConfig import cloudinary_config
 
 app = FastAPI()
 

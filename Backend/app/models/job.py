@@ -3,7 +3,7 @@ from typing import Optional,TYPE_CHECKING
 from sqlalchemy import Column
 from sqlalchemy.dialects.postgresql import JSON
 from sqlmodel import Field, Relationship, SQLModel
-from app.utils.dbUtils import generate_job_id
+from utils.dbUtils import generate_job_id
 
 if TYPE_CHECKING:
     from app.models.user import User
