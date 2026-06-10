@@ -1,5 +1,6 @@
 from fastapi import FastAPI
-from app.models import *
+from app.models.user import User, EmployerRating, Subscription, Payment, Notification
+from app.models.job import Job, JobLike
 from app.db import create_db_and_tables
 from app.routes import user, job, admin
 from fastapi.middleware.cors import CORSMiddleware
