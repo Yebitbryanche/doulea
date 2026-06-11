@@ -3,9 +3,9 @@ from fastapi import Depends, HTTPException
 from sqlmodel import select
 from fastapi.security import OAuth2PasswordBearer
 from pwdlib import PasswordHash
-from db import SessionDep
+from app.db import SessionDep
 from models.user import User
-from config import settings
+from app.config import settings
 from jose import JWTError, jwt
 from email.message import EmailMessage
 from aiosmtplib import send
