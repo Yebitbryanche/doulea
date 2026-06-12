@@ -161,6 +161,13 @@ const Settings = () => {
             onPress={() => {router.push('/pages/Help_and_Support')}}
           />
         </Section>
+        {
+          !user?
+          <Section title="login">
+            <Item label='Login' onPress={() => router.replace('/Auth/Login')}/>
+          </Section>
+          :null
+        }
 
         {/*LOGOUT */} 
         <View className="mx-4 mt-6">

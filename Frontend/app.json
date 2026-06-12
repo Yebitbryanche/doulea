@@ -4,7 +4,7 @@
     "slug": "Douleia",
     "version": "1.0.0",
     "splash": {
-      "image": "./assets/splash.png",
+      "image": "./assets/images/splash-icon.png",
       "resizeMode": "contain",
       "backgroundColor": "#FFFFFF"
     },

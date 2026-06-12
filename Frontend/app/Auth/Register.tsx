@@ -11,6 +11,7 @@ import { checkEmail, passwordCheck, phonecheck } from '@/components/utils/contra
 import apiClient from '../apiClient';
 import { useTranslation } from 'react-i18next';
 import { Ionicons } from '@expo/vector-icons';
+import { useTheme } from '../context/ThemeContext';
 
 
 const Register = () => {
@@ -24,7 +25,8 @@ const Register = () => {
   const [toastMessage, setToastMessage] = useState('')
   const [role, setRole] = useState<'user' | 'employer'>('user')
   const [roleModalVisible, setRoleModalVisible] = useState(false)
-  const {t} = useTranslation()
+  const {t} = useTranslation();
+  const {isDark} = useTheme();
 
   const userRole = ['user','employer']
 
@@ -127,7 +129,7 @@ const selectRole = (selectedRole: 'user' | 'employer') => {
 }
 
   return (
-    <SafeAreaView className='flex-1 bg-white'>
+    <SafeAreaView className={isDark?'flex-1 bg-white':'flex-1 bg-back'}>
       <KeyboardAvoidingView 
         style={{flex:1}}
         behavior={Platform.OS === "ios"?"padding":"height"}
@@ -147,7 +149,7 @@ const selectRole = (selectedRole: 'user' | 'employer') => {
                 />
                 <InputField label={t('Phone')} placeholder=' 670 254 124' keyboardType='phone-pad' inputMode='tel' onChange={setPhone} value={phone}/>
               <View className='flex flex-col'>
-                <Text> {t("register as employer")}</Text>
+                <Text className={isDark?'font-medium text-dark':'text-white font-medium'}> {t("register as employer")}</Text>
                 <TouchableOpacity
                   onPress={() => setRoleModalVisible(true)}      
                   className="
@@ -163,7 +165,7 @@ const selectRole = (selectedRole: 'user' | 'employer') => {
                   style={{
                     paddingVertical: Platform.OS === 'ios' ? 14 : 10,
                   }}>
-                  <Text>{role}</Text>
+                  <Text className={isDark?'font-medium text-dark':'text-white font-medium'}>{role}</Text>
                 </TouchableOpacity>
               </View> 
                 
@@ -182,13 +184,13 @@ const selectRole = (selectedRole: 'user' | 'employer') => {
       onHide={() => setToastVisible(false)}/>
         {/* 🏷 MODAL */}
       <Modal visible={roleModalVisible} animationType="slide" transparent>
-        <View className="flex-1 justify-end bg-black/40">
-          <View className="bg-white p-5 rounded-t-3xl">
+        <View className={"flex-1 justify-end bg-black/40"}>
+          <View className={isDark?"bg-white p-5 rounded-t-3xl":"bg-dark p-5 rounded-t-3xl"}>
             
             <View className="flex-row justify-between items-center mb-4">
-              <Text className="text-lg font-bold">{t("Choose a role")}</Text>
+              <Text className={isDark?'font-bold text-dark text-lg':'text-white font-bold text-lg'}>{t("Choose a role")}</Text>
               <TouchableOpacity onPress={() => setRoleModalVisible(false)}>
-                <Ionicons name="close" size={24} />
+                {isDark?<Ionicons name="close" size={24} color={'black'} />:<Ionicons name="close" size={24} color={'white'} />}
               </TouchableOpacity>
             </View>
 
@@ -206,7 +208,7 @@ const selectRole = (selectedRole: 'user' | 'employer') => {
                         : "border-gray-300"
                     }`}
                   >
-                    <Text className={selected ? "text-white" : "text-black"}>
+                    <Text className={selected ? "text-white" :isDark ? "text-black": "text-white"}>
                       {item}
                     </Text>
                   </TouchableOpacity>

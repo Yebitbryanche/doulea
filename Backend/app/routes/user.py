@@ -305,7 +305,7 @@ def get_employer_reviews(
 # make payment via notchpay
 # -------------------------
 
-@router.post('/payments/')
+@router.post('/payments')
 def InitaitePayment(session:SessionDep, newPay:MakePayment):
     user = session.exec(select(User).where(User.id == newPay.id)).first()
     if not user:

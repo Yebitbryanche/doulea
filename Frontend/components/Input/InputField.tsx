@@ -36,6 +36,7 @@ const InputField = ({
       <View className="relative">
         <TextInput
           placeholder={placeholder}
+          placeholderTextColor={isDark?'#474747':'#b3b4b5'}
           onChangeText={onChange}
           //className="border border-gray-300 border-1 w-[330px] rounded-2xl focus:border-primary/50 focus:border-1 pr-12"
           value={value}

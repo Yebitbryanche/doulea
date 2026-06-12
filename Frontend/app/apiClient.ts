@@ -1,7 +1,8 @@
 import axios from "axios"
 import * as securestore from 'expo-secure-store'
+import { API_BASE_URL } from "@/config/apiconfig";
 
-export const API_URL = "http://192.168.43.252:8000"; // or your IP for real devices
+export const API_URL = "https://douleia-production.up.railway.app"; // or your IP for real devices
 
 const apiClient = axios.create({
   baseURL: API_URL,
