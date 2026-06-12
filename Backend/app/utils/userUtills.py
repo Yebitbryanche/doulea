@@ -4,7 +4,7 @@ from sqlmodel import select
 from fastapi.security import OAuth2PasswordBearer
 from pwdlib import PasswordHash
 from app.db import SessionDep
-from models.user import User
+from app.models.user import User
 from app.config import settings
 from jose import JWTError, jwt
 from email.message import EmailMessage
