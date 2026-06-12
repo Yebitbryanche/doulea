@@ -3,9 +3,11 @@ import { View, Text, TouchableOpacity, Image } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Feather } from "@expo/vector-icons";
 import { router } from "expo-router";
+import { useTheme } from "@/app/context/ThemeContext";
 
 const PaymentOption = () => {
   const [selected, setSelected] = useState<string | null>(null);
+  const {isDark} = useTheme();
 
   const PaymentCard = ({
     title,
@@ -26,14 +28,14 @@ const PaymentOption = () => {
         className={`flex-row items-center justify-between p-4 rounded-2xl mb-4 border ${
           isActive
             ? "border-blue-500 bg-blue-50"
-            : "border-gray-200 bg-white"
+            : isDark ? "border-gray-200 bg-white":"border-gray-800 bg-dark"
         }`}
       >
         <View className="flex-row items-center gap-x-3">
           <Image source={image} className="w-12 h-12" resizeMode="contain" />
 
           <View>
-            <Text className="font-bold text-base">{title}</Text>
+            <Text className={isDark?"font-bold text-base":isActive?"font-bold text-base":"font-bold text-white"}>{title}</Text>
             <Text className="text-gray-500 text-sm">{subtitle}</Text>
           </View>
         </View>
@@ -48,14 +50,14 @@ const PaymentOption = () => {
   };
 
   return (
-    <SafeAreaView className="flex-1 bg-white px-4">
+    <SafeAreaView className={isDark?"flex-1 bg-white px-4":"flex-1 bg-back px-4"}>
       {/* Header */}
       <View className="flex-row items-center mb-6">
         <TouchableOpacity onPress={() => router.back()}>
           <Feather name="chevron-left" size={26} color="#2563EB" />
         </TouchableOpacity>
 
-        <Text className="text-xl font-bold ml-3">Payment Method</Text>
+        <Text className={isDark?"text-xl font-bold ml-3 text-dark":"text-xl font-bold ml-3 text-gray-100"}>Payment Method</Text>
       </View>
 
       {/* Cards */}

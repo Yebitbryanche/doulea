@@ -111,6 +111,7 @@ const Home = () => {
       try {
         setLoading(true);
         const response = await apiClient.get(`/job/recommendations/${user?.id}`);
+        console.log(response.data)
         setFilteredJobs(response.data || []);
       } catch (error) {
         console.log("Error fetching similarity mappings:", error);

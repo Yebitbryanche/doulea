@@ -50,7 +50,7 @@ const DefaultLoader = () => {
         <Bar delay={150} />
         <Bar delay={300} />
       </View>
-      <Text className="mt-2">Loading...</Text>
+      <Text className={isDark?"mt-2 text-dark":"mt-2 text-gray-200"}>Loading...</Text>
     </View>
   );
 };

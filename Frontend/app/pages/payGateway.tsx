@@ -7,12 +7,14 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { useAuth } from '../context/AuthContext';
 import { initiatePayment } from '@/components/requests/requests';
 import DefaultLoader from '@/components/Loader/defaultLoader';
+import { useTheme } from '../context/ThemeContext';
 
 const payGateway = () => {
   const { payment } = useLocalSearchParams();
   const [amount, setAmount] = useState<number>(0)
   const [loading, setLoading] = useState(false)
-  const {user} = useAuth()
+  const {user} = useAuth();
+  const {isDark} = useTheme();
 
 
 const Pay_ = async () => {
@@ -67,7 +69,7 @@ const Pay_ = async () => {
   };
 
   return (
-    <SafeAreaView className="flex-1 bg-gray-100">
+    <SafeAreaView className={isDark?"flex-1 bg-gray-100":"flex-1 bg-back"}>
       <KeyboardAvoidingView
         behavior={Platform.OS === 'ios' ? 'padding' : undefined}
         className="flex-1"
@@ -75,7 +77,7 @@ const Pay_ = async () => {
         <View className="flex-1 items-center px-3 pt-10">
 
           {/* HEADER CARD */}
-          <View className="w-full bg-white rounded-3xl shadow-md py-6 px-2 items-center">
+          <View className={isDark?"w-full bg-white rounded-3xl shadow-md py-6 px-2 items-center":"w-full bg-dark rounded-3xl shadow-md py-6 px-2 items-center"}>
             
             <Image
               source={getImage()}
@@ -93,7 +95,7 @@ const Pay_ = async () => {
           </View>
 
           {/* FORM CARD */}
-          <View className="w-full bg-white rounded-3xl shadow-md mt-8 p-6">
+          <View className={isDark?"w-full bg-white rounded-3xl shadow-md mt-8 p-6":"w-full bg-dark rounded-3xl shadow-md mt-8 p-6"}>
 
             <Text className="text-gray-700 font-semibold mb-2">
               Enter amount
@@ -101,6 +103,7 @@ const Pay_ = async () => {
 
             <TextInput
               placeholder="e.g 1000 XAF"
+              placeholderTextColor={isDark?'#78797bb4':'#eff6ffbd'}
               keyboardType="numeric"
               className="border border-gray-300 border-1 w-full rounded-2xl focus:border-primary/50 focus:border-1 pr-12"
               onChangeText={(text) => setAmount(Number(text))}

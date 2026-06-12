@@ -6,11 +6,13 @@ import Toast from '@/components/Toast';
 import { router, useLocalSearchParams } from "expo-router";
 import { useUpload } from "../context/Uploadcontext";
 import ImageLoader from "@/components/Loader/ImageUpload";
+import { useTheme } from "../context/ThemeContext";
 
 export default function AddImageScreen() {
   const [localImage, setLocalImage] = useState<string | null>(null);
   const {job_id} = useLocalSearchParams()
-  const {image,pickImage, uploadImage,loading,toastMessage,toastType,toastVisible} = useUpload()
+  const {image,pickImage, uploadImage,loading,toastMessage,toastType,toastVisible} = useUpload();
+  const {isDark} = useTheme();
 
 
   const handlePickImage = async () => {
@@ -33,7 +35,7 @@ export default function AddImageScreen() {
 
 
   return (
-    <View className="flex-1 bg-white justify-center items-center px-6">
+    <View className={isDark?"flex-1 bg-white justify-center items-center px-6":"flex-1 bg-back justify-center items-center px-6"}>
 
       <Animated.Text
         entering={FadeInDown.duration(600)}

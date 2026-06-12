@@ -64,8 +64,9 @@ const Uploads = () => {
         category: selectedCategories,
         payment: parseFloat(payment),
       });
+      console.log(response.data)
 
-      const jobID = response.data.Job.id;
+      const jobID = await response.data.Job.id;
 
       setToastMessage("Upload successful!");
       setToastType("success");
