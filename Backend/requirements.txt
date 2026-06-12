@@ -1,8 +1,8 @@
 fastapi[standard]
-sqlalchemy>=2.0.3
+sqlalchemy>= 2.0.3
 pymysql
 uvicorn
-python-jose==3.3.0
+python-jose == 3.3.0
 passlib[bcrypt]==1.7.4
 sqlmodel
 pwdlib[argon2]
@@ -10,8 +10,4 @@ aiosmtplib
 cloudinary
 requests
 pydantic_settings
-
-# Force the small CPU wheel for PyTorch before installing transformers
---extra-index-url https://download.pytorch.org/whl/cpu
-torch==2.2.2+cpu
 sentence-transformers
