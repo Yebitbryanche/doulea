@@ -19,6 +19,7 @@ const Home = () => {
   const [loading, setLoading] = useState(false);
   const [jobs, setJobs] = useState<CardProps[]>([]);
   const [filteredJobs, setFilteredJobs] = useState<CardProps[]>([]);
+  const [refreshing, setRefreshing] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [offset, setOffset] = useState(0);
   const [hasMore, setHasMore] = useState(true);
@@ -30,6 +31,22 @@ const Home = () => {
   const LIMIT = 10;
   const filters = ["recent", "nearby", "popular", "recommended"];
   const [activeFilter, setActiveFilter] = useState("recent");
+
+  const handle_refresh = async () => {
+    try{
+      setRefreshing(true)
+      const res = await getJobs();
+
+      await new Promise(resolve => setTimeout(resolve,2000))
+
+    }
+    catch(error:any){
+      console.error(error.message);
+    }
+    finally{
+      setRefreshing(false)
+    }
+  }
 
   // Fetch standard jobs from database
   const getJobs = async (reset = false) => {
@@ -265,6 +282,8 @@ const Home = () => {
               </Text>
             ) : null
           }
+          refreshing={refreshing}
+          onRefresh={handle_refresh}
         />
       </View>
 

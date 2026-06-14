@@ -290,7 +290,8 @@ def get_employer_reviews(
             "name": employer.user_name,
             "email": getattr(employer, "email", None),
             "avatar": employer.profile_URL,
-            "bio":employer.bio
+            "bio":employer.bio,
+            "phone":employer.phone
         },
         "average_rating": avg_rating or 0,
         "jobs": [{"id": job.id, "title": job.title} for job in jobs],

@@ -41,7 +41,18 @@ const EditJob = () => {
         }
     };
 
-// upload image to the backend
+    // get a particular job
+    const getJob = async () => {
+        try {
+        const response = await apiClient.get(`/job/job/${id}`);
+        setJob(response.data);
+        setCategory(response.data.job.category || []);
+        } catch (error: any) {
+        console.log(error.message);
+        }
+    };
+
+    // upload image to the backend
     const handleUploadImage = async () => {
         try{
             setLoading(true)
@@ -53,6 +64,7 @@ const EditJob = () => {
                 return;
             }
             await uploadImage(`job/upload_image/${id}`,selectedImage)
+            getJob();
         }
         catch(error:any){
             console.error(error.message)
@@ -90,16 +102,6 @@ const EditJob = () => {
         }
     }
 
-    // get a particular job
-    const getJob = async () => {
-        try {
-        const response = await apiClient.get(`/job/job/${id}`);
-        setJob(response.data);
-        setCategory(response.data.job.category || []);
-        } catch (error: any) {
-        console.log(error.message);
-        }
-    };
 
     // set job values to state variables
     useEffect(() => {

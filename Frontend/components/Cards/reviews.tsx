@@ -1,3 +1,4 @@
+import { useTheme } from '@/app/context/ThemeContext';
 import { Feather, FontAwesome } from '@expo/vector-icons';
 import React from 'react';
 import { View, Text, Image } from 'react-native';
@@ -19,9 +20,10 @@ const Review_card = ({
   rating,
   verified,
 }: Props) => {
+  const {isDark} = useTheme()
   return (
     <View
-      className="my-3 p-4 bg-white rounded-2xl"
+      className={isDark?"my-3 p-4 bg-white rounded-2xl":"my-3 p-4 bg-back rounded-2xl"}
       style={{
         shadowColor: "#000",
         shadowOffset: { width: 0, height: 3 },
@@ -43,27 +45,27 @@ const Review_card = ({
 
           <View className="flex-1">
             <View className="flex-row items-center gap-x-1">
-              <Text className="font-bold text-base">{user_name}</Text>
+              <Text className={isDark?"font-bold text-base":"font-bold text-gray-100"}>{user_name}</Text>
 
               {verified && (
                 <Feather name="check-circle" size={14} color="#22c55e" />
               )}
             </View>
 
-            <Text className="text-gray-500 text-sm">{review}</Text>
+            <Text className={isDark?"text-gray-500 text-sm":"text-gray-400 text-sm"}>{review}</Text>
           </View>
         </View>
 
         {/* RIGHT: Rating */}
         <View className="flex-row items-center gap-x-1">
-          <Text className="font-bold text-sm">{rating}</Text>
+          <Text className={isDark?"font-bold text-sm text-dark":"font-bold text-sm text-gray-200"}>{rating}</Text>
           <FontAwesome name="star" size={14} color="#e6de10" />
         </View>
       </View>
 
       {/* COMMENT */}
-      <View className="mt-3 bg-secondary p-3 rounded-xl">
-        <Text className="text-sm text-gray-700">{comment}</Text>
+      <View className={isDark?"mt-3 bg-secondary p-3 rounded-xl":"mt-3 bg-dark/50 p-3 rounded-xl"}>
+        <Text className={isDark?"text-sm text-gray-700":"text-sm text-gray-300"}>{comment}</Text>
       </View>
     </View>
   );

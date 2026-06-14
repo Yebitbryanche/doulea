@@ -5,7 +5,7 @@ import * as SecureStore from "expo-secure-store";
 import images from '@/types/images';
 import { Link, router } from 'expo-router';
 import React, { useState } from 'react';
-import { View, KeyboardAvoidingView,Platform, ScrollView } from 'react-native';
+import { View, KeyboardAvoidingView,Platform, ScrollView,Text } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { checkEmail, passwordCheck } from '@/components/utils/contraints';
 import Toast from '@/components/Toast';
@@ -14,6 +14,7 @@ import { useAuth } from '../context/AuthContext';
 import DefaultLoader from '@/components/Loader/defaultLoader';
 import { useTranslation } from 'react-i18next';
 import { useTheme } from '../context/ThemeContext';
+import { Ionicons } from '@expo/vector-icons';
 
 const Login = () => {
   const [togglePassword, setTogglePassword] = useState(false)
@@ -110,6 +111,14 @@ const Login = () => {
               value={password}
               icon={togglePassword ? images.shuteye : images.eye}
               secureText={true}/>
+          </View>
+          <View className='flex flex-row gap-x-5'>
+            <View className='flex flex-col items-center p-2 rounded-lg border border-gray-300'>
+              <Ionicons name='logo-google' size={25} color={'#2563EB'}/>
+            </View>
+            <View className='flex flex-col items-center p-2 rounded-lg border border-gray-300'>
+              <Ionicons name='logo-facebook' size={25} color={'#2563EB'}/>
+            </View>
           </View>
           <View className='mt-[2rem]'>
             <RegisterButton title={t('Login')} onPress={handle_Login}/>

@@ -9,9 +9,9 @@ module.exports = {
         primary: "#2563EB",     // blue (trust, professional)
         secondary: "#EFF6FF",   // soft blue background
         accent: "#fffbe0",      // green (success / hiring)
-        dark: "#111827",        // text
+        dark: "#1a1d24",        // text
         muted: "#6B7280",
-        back: "#0f1a31"        // secondary text
+        back: "#14223f"        // secondary text
       }
     },
   },

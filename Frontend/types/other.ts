@@ -45,6 +45,7 @@ export interface Employer{
     bio:string
     email:string
     name:string
+    phone:string
 }
 
 export interface TransactionTypes {

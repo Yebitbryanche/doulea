@@ -3,7 +3,7 @@ import { deleteJob, getEmployer_jobs } from '@/components/requests/requests';
 import { JobDetailProps } from '@/types/other';
 import { Feather, Ionicons } from '@expo/vector-icons';
 import React, { useEffect, useState } from 'react';
-import { View, Text, TouchableOpacity, ScrollView, Image, Modal } from 'react-native';
+import { View, Text, TouchableOpacity, ScrollView, Image, Modal, RefreshControl } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useAuth } from '../context/AuthContext';
 import { router } from 'expo-router';
@@ -21,6 +21,7 @@ const myPosts = () => {
     const [loading,setLoading] = useState(false)
     const [deleteModalVisible, setDeleteModalVisible] = useState(false);
     const [selectedItem, setSelectedItem] = useState<JobDetailProps | null>(null);
+    const [refreshing, setRefresh] = useState(false);
 
     const getUploads = async () =>{
         try{
@@ -34,6 +35,20 @@ const myPosts = () => {
         finally{
             setLoading(false)
         }
+    }
+
+    const handleRefresh = async () => {
+      try{
+        setRefresh(true);
+        const response = getUploads();
+        setTimeout(() => setRefresh(false),2000)
+      }
+      catch(error:any){
+        console.error(error.message);
+      }
+      finally{
+        setRefresh(false)
+      }
     }
 
     // delete listing
@@ -67,7 +82,10 @@ const myPosts = () => {
     },[user?.id])
   return (
     <SafeAreaView className={isDark?'flex-1 bg-white':'flex-1 bg-back'}>
-        <ScrollView>
+        <ScrollView
+        refreshControl={
+          <RefreshControl refreshing={refreshing} onRefresh={handleRefresh} />
+        }>
             <View className='flex flex--col items-center p-3 relarive'>
         {isDark?<Ionicons name='chevron-back' size={22} color={'#1F2937'} className="absolute left-3 top-3" onPress={() => router.back()} />:<Ionicons name='chevron-back' size={22} color={'#dedfe2'} className="absolute left-3 top-3" onPress={() => router.back()}/>}
                 <Text className={isDark?'font-black text-2xl text-dark':'font-black text-2xl text-gray-100'}>My Posts</Text>

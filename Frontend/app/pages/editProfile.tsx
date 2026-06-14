@@ -2,7 +2,15 @@ import RegisterButton from '@/components/Buttons/RgisterButton';
 import InputField from '@/components/Input/InputField';
 import { Feather, Octicons } from '@expo/vector-icons';
 import React, { useState } from 'react';
-import { View, Text, Image, ScrollView, KeyboardAvoidingView, Platform, TouchableOpacity } from 'react-native';
+import {
+  View,
+  Text,
+  Image,
+  ScrollView,
+  KeyboardAvoidingView,
+  Platform,
+  TouchableOpacity,
+} from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useAuth } from '../context/AuthContext';
 import { updateProfile } from '@/components/requests/requests';
@@ -13,161 +21,215 @@ import { useUpload } from '../context/Uploadcontext';
 import { useTranslation } from 'react-i18next';
 import { useTheme } from '../context/ThemeContext';
 
-const profile = () => {
-    const {user,fetchUser} = useAuth()
-    const {t} = useTranslation()
-    const [name,setName] = useState<string |undefined>(user?.user_name || "")
-    const [email, setEmail] = useState<string |undefined>(user?.email || "");
-    const [phone, setPhone] = useState<string | undefined>(user?.phone||'')
-    const [location,setLocation] = useState<string | undefined>(user?.address||'')
-    const [bio, setBio] = useState<string | undefined>(user?.bio||'')
-    const [loading, setLoading] = useState(false)
-    const [message,setMessage] = useState('')
-    const [type, setType] = useState<ToastType>()
-    const [visible, setvisible] = useState(false)
-    const {uploadImage,pickImage,toastMessage,toastType,toastVisible} = useUpload()
-    const {isDark} = useTheme()
+const Profile = () => {
+  const { user, fetchUser } = useAuth();
+  const { t } = useTranslation();
 
-    const handleUploadImage = async () => {
-        try{
-            setLoading(true)
-            const selectedImage = await pickImage()
-            if(!selectedImage){
-                setMessage(toastMessage)
-                setType(toastType)
-                setvisible(toastVisible)
-                return;
-            }
-            await uploadImage(`users/upload_avatar/${user?.id}`,selectedImage)
-            await fetchUser()
-        }
-        catch(error:any){
-            console.error(error.message)
-        }
-        finally{
-            setLoading(false)
-        }
+  const [name, setName] = useState(user?.user_name || '');
+  const [email, setEmail] = useState(user?.email || '');
+  const [phone, setPhone] = useState(user?.phone || '');
+  const [location, setLocation] = useState(user?.address || '');
+  const [bio, setBio] = useState(user?.bio || '');
+
+  const [loading, setLoading] = useState(false);
+  const [message, setMessage] = useState('');
+  const [type, setType] = useState<ToastType>('info');
+  const [visible, setvisible] = useState(false);
+
+  const { uploadImage, pickImage, toastMessage, toastType, toastVisible } =
+    useUpload();
+
+  const { isDark } = useTheme();
+
+  const handleUploadImage = async () => {
+    try {
+      setLoading(true);
+      const selectedImage = await pickImage();
+
+      if (!selectedImage) return;
+
+      await uploadImage(
+        `users/upload_avatar/${user?.id}`,
+        selectedImage
+      );
+
+      await fetchUser();
+    } catch (error: any) {
+      console.error(error.message);
+    } finally {
+      setLoading(false);
     }
+  };
 
-    const handleEdit = async () =>{
-        try{
-            setLoading(true)
-            const response = await updateProfile(user?.id,name,email,phone,location,bio)
+  const handleEdit = async () => {
+    try {
+      setLoading(true);
 
-            if(!name){
-                setMessage('Name required');
-                setType('error');
-                setvisible(true);
-                return;
-            }
-            if(!email){
-                setMessage('email required');
-                setType('error');
-                setvisible(true);
-                return;
-            }
-            if(!phone){
-                setMessage('Phone number required');
-                setType('error');
-                setvisible(true);
-                return;
-            }
-            if(!location){
-                setMessage('Location required');
-                setType('error');
-                setvisible(true);
-                return;
-            }
+      if (!name || !email || !phone || !location) {
+        setMessage('Please fill all required fields');
+        setType('error');
+        setvisible(true);
+        return;
+      }
 
-            setMessage('profile updated successfully');
-            setType('success');
-            setvisible(true);
-            await fetchUser()
+      await updateProfile(
+        user?.id,
+        name,
+        email,
+        phone,
+        location,
+        bio
+      );
 
-        }
-        catch(error:any){
-            console.error(error.message)
-        }
-        finally{
-            setLoading(false)
-        }
+      setMessage('Profile updated successfully 🚀');
+      setType('success');
+      setvisible(true);
+
+      await fetchUser();
+    } catch (error: any) {
+      console.error(error.message);
+    } finally {
+      setLoading(false);
     }
+  };
+
   return (
-    <SafeAreaView className={isDark?'bg-white flex-1':'bg-back flex-1'}>
-        <KeyboardAvoidingView
-        style={{flex:1}}
-        behavior={Platform.OS === 'ios'?'padding':'height'}>
-            <ScrollView
-                showsVerticalScrollIndicator={false}>
-            <View className='flex flex-col items-center p-3'>
-                {isDark?<Feather name='chevron-left' size={23} className='absolute left-2 top-4' onPress={() => router.back()}/>:<Feather name='chevron-left' size={23} className='absolute left-2 top-4' color={'#fff'} onPress={() => router.back()}/>}
-                <Text className={isDark?'font-bold text-2xl text-dark':'font-bold text-2xl text-white'}>{t("Edit Profile")}</Text>
-                <View className='mt-[3rem]'>
-                    <Image className="w-[100px] h-[100px] rounded-full" source={user?.profile_URL?{uri:user?.profile_URL}:require('@/assets/images/default_profile.jpg')}  resizeMode={'contain'}/>
-                    <TouchableOpacity  onPress={() => handleUploadImage()} className='absolute bottom-0 right-0 bg-primary border-2 border-white p-2 rounded-full'>
-                        <Feather 
-                            name='camera' size={20} color={"white"}/>
-                    </TouchableOpacity>
+    <SafeAreaView className={isDark ?'flex-1 bg-gray-50': 'flex-1 bg-back'  }>
+      <KeyboardAvoidingView
+        style={{ flex: 1 }}
+        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+      >
+        <ScrollView showsVerticalScrollIndicator={false}>
+
+          {/* HEADER */}
+          <View className="bg-blue-600 rounded-b-[30px] px-5 pt-10 pb-10">
+
+            <Feather
+              name="chevron-left"
+              size={26}
+              color="white"
+              onPress={() => router.back()}
+            />
+
+            <Text className="text-white text-2xl font-bold mt-3 text-center">
+              {t('Edit Profile')}
+            </Text>
+
+            {/* AVATAR SECTION */}
+            <View className="items-center mt-6">
+
+              <View className="relative">
+                <Image
+                  className="w-24 h-24 rounded-full border-4 border-white"
+                  source={
+                    user?.profile_URL
+                      ? { uri: user.profile_URL }
+                      : require('@/assets/images/default_profile.jpg')
+                  }
+                />
+
+                <TouchableOpacity
+                  onPress={handleUploadImage}
+                  className="absolute bottom-0 right-0 bg-white p-2 rounded-full"
+                >
+                  <Feather name="camera" size={18} color="#2563EB" />
+                </TouchableOpacity>
+              </View>
+
+              <Text className="text-white mt-3 font-semibold">
+                {user?.bio || 'Tell us about yourself'}
+              </Text>
+
+              {/* VERIFICATION BADGE */}
+              {user?.role === 'employer' && (
+                <View className="flex-row items-center mt-2 bg-white/20 px-3 py-1 rounded-full">
+                  {user?.is_verified ? (
+                    <>
+                      <Octicons name="verified" size={14} color="#22c55e" />
+                      <Text className="text-green-200 ml-1">
+                        Verified Employer
+                      </Text>
+                    </>
+                  ) : (
+                    <>
+                      <Octicons name="unverified" size={14} color="#f87171" />
+                      <Text className="text-red-200 ml-1">
+                        Not Verified
+                      </Text>
+                    </>
+                  )}
                 </View>
-                <Text className={isDark?'text-sm font-semibold my-2 text-dark':'text-sm font-semibold my-2 text-gray-100'}>{!user?.bio?"Tell us about you":user?.bio}</Text>
-                {user?.role === 'employer' &&
-                <View>
-                {user?.is_verified?
-                    <View className='flex flex-row gap-x-2 items-center py-3'>
-                        <Octicons name='verified' size={15} color={'#5677E8'}/>
-                        <Text className='text-sm font-bold text-[#5677E8]'>Verified</Text>
-                    </View>:
-                    <View className='flex flex-row gap-x-2 items-center py-3'>
-                        <Octicons name='unverified' size={15} color={'#cb1931'}/>
-                        <Text className='text-sm font-bold text-[#cb1931]'>Not Verified</Text>
-                    </View>
-                }
-                </View>}
-                
+              )}
             </View>
-            <View className='flex flex-col items-center gap-y-4 mt-4 p-3'>
-                <InputField 
+          </View>
+
+          {/* FORM CARD */}
+          <View className={isDark?"bg-white rounded-2xl p-5 shadow":"bg-dark rounded-2xl p-5 shadow"}>
+
+            <Text className={isDark?"text-lg font-bold mb-4":"text-lg font-bold text-gray-300 mb-4"}>
+              Personal Information
+            </Text>
+
+            <View className="flex-col items-center p-2 gap-y-4">
+
+              <InputField
                 label={t('Name')}
                 value={name}
-                placeholder='New Name'
-                onChange={(name) => {setName(name)}}/>
+                placeholder="Enter your name"
+                onChange={setName}
+              />
 
-                <InputField 
+              <InputField
                 label={t('Email')}
                 value={email}
-                placeholder='new@gmail.com'
-                onChange={(email) => {setEmail(email)}}/>
+                placeholder="Enter your email"
+                onChange={setEmail}
+              />
 
-                <InputField 
+              <InputField
                 label={t('Phone')}
                 value={phone}
-                placeholder='+237 000 000 000'
-                keyboardType='default'
-                onChange={(phone) => {setPhone(phone)}}/>
+                placeholder="+237 000 000 000"
+                onChange={setPhone}
+              />
 
-
-                <InputField 
+              <InputField
                 label={t('Location')}
                 value={location}
-                placeholder='Location'
-                onChange={(location) => {setLocation(location)}}/>
+                placeholder="Your location"
+                onChange={setLocation}
+              />
 
-                <InputField
-                value={bio}
+              <InputField
                 label={t('Bio')}
-                placeholder='tell us about you'
-                onChange={(bio) => {setBio(bio)}}/>
+                value={bio}
+                placeholder="Tell employers about you"
+                onChange={setBio}
+              />
+            </View>
+          </View>
 
-            </View>
-            <View className='flex self-center my-3'>
-                <RegisterButton title={t('Save Edits')} onPress={handleEdit}/>
-            </View>
-            </ScrollView>
-        </KeyboardAvoidingView>
-        {loading && <DefaultLoader/>}
-        <Toast type={type} visible={visible} message={message} onHide={() => setvisible(false)}/>
+          {/* SAVE BUTTON */}
+          <View className="mt-6 mx-5 mb-10">
+            <RegisterButton
+              title={t('Save Changes')}
+              onPress={handleEdit}
+            />
+          </View>
+
+        </ScrollView>
+      </KeyboardAvoidingView>
+
+      {loading && <DefaultLoader />}
+
+      <Toast
+        type={type}
+        visible={visible}
+        message={message}
+        onHide={() => setvisible(false)}
+      />
     </SafeAreaView>
   );
-}
+};
 
-export default profile;
+export default Profile;

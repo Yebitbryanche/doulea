@@ -57,7 +57,7 @@ const Toast = ({
       className={`absolute w-[95%] top-12 self-center px-3 py-5 flex flex-row gap-x-5 rounded-lg z-50 ${colors[type]}`}
     >
         {type === 'error'? <Text><Ionicons name="warning-outline" size={23} color={'white'}/></Text>:
-        type === 'success'?<Text><FontAwesome name="check" size={23} color={'white'}/></Text>:
+        type === 'success'?<Text><Ionicons name="checkmark-circle-outline" size={23} color={'white'}/></Text>:
         <Text><Ionicons name="information-circle-outline" size={23} color={'white'}/></Text>}
       <Text className="text-white text-sm">{message}</Text>
     </Animated.View>

@@ -56,11 +56,12 @@ const Settings = () => {
         "flex-1 bg-back"}>
       <ScrollView showsVerticalScrollIndicator={false}>
 
-        {/* 👤 PROFILE HEADER */}
+        {/* PROFILE HEADER */}
       <View className={isDark?
         "bg-white px-5 py-6 flex-row items-center gap-x-4"
         :
-        "bg-dark px-5 py-6 flex-row items-center gap-x-4"}>
+        "bg-dark px-5 py-6 flex-row items-center gap-x-4"}
+        >
           <Image
             className="w-16 h-16 rounded-full"
             source={
@@ -73,7 +74,10 @@ const Settings = () => {
             <Text className={isDark?
               "text-lg font-bold text-gray-800"
               :
-              "text-lg font-bold text-white"}>
+              "text-lg font-bold text-white"}
+              onPress={() =>router.push({
+                pathname:"/pages/editProfile"
+              })}>
               {user?.user_name || "User"}
             </Text>
             <Text className="text-gray-400 text-sm">{user?.email}</Text>
