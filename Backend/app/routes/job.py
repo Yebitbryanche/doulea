@@ -67,7 +67,7 @@ def upload_job(job: JobCreate, session: SessionDep,currentUser = Depends(get_cur
 
 
     #select all non employers
-    users = session.exec(select(User).where(User.role == False)).all()
+    users = session.exec(select(User).where(User.role == "user")).all()
 
     # create notifications
     for user in users:

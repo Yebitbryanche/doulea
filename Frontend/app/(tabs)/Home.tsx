@@ -32,21 +32,6 @@ const Home = () => {
   const filters = ["recent", "nearby", "popular", "recommended"];
   const [activeFilter, setActiveFilter] = useState("recent");
 
-  const handle_refresh = async () => {
-    try{
-      setRefreshing(true)
-      const res = await getJobs();
-
-      await new Promise(resolve => setTimeout(resolve,2000))
-
-    }
-    catch(error:any){
-      console.error(error.message);
-    }
-    finally{
-      setRefreshing(false)
-    }
-  }
 
   // Fetch standard jobs from database
   const getJobs = async (reset = false) => {
@@ -85,6 +70,22 @@ const Home = () => {
       setLoading(false);
     }
   };
+
+  /// handle drag down refresh
+
+  const handle_refresh = async () => {
+    try{
+      setRefreshing(true)
+      await getJobs();
+
+    }
+    catch(error:any){
+      console.error(error.message);
+    }
+    finally{
+      setRefreshing(false)
+    }
+  }
 
   // Initial mount logic
   useEffect(() => {

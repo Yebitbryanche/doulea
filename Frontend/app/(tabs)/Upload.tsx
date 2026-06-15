@@ -9,7 +9,8 @@ import {
   ScrollView,
   Modal,
   Image,
-  Dimensions
+  Dimensions,
+  ActivityIndicator
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import apiClient from "../apiClient";
@@ -19,12 +20,14 @@ import { Ionicons } from "@expo/vector-icons";
 import { useAuth } from "../context/AuthContext";
 import images from "@/types/images";
 import { useTheme } from "../context/ThemeContext";
+import DefaultLoader from "@/components/Loader/defaultLoader";
 
 
 const Uploads = () => {
   const [title, setTitle] = useState("");
   const {user} = useAuth()
   const {width, height} = Dimensions.get("window")
+  const [loading, setLoading] = useState(false);
   const {isDark} = useTheme()
   const [description, setDescription] = useState("");
   const [location, setLocation] = useState("");
@@ -57,6 +60,7 @@ const Uploads = () => {
     }
 
     try {
+      setLoading(true)
       const response = await apiClient.post("/job/upload_job", {
         title,
         description,
@@ -66,7 +70,8 @@ const Uploads = () => {
       });
       console.log(response.data)
 
-      const jobID = await response.data.Job.id;
+      const jobID = response.data.Job.id;
+      console.log(jobID)
 
       setToastMessage("Upload successful!");
       setToastType("success");
@@ -81,6 +86,9 @@ const Uploads = () => {
       }, 1000);
     } catch (error: any) {
       console.log(error.message);
+    }
+    finally{
+      setLoading(false)
     }
   };
 
@@ -237,6 +245,9 @@ const Uploads = () => {
         message={toastMessage}
         onHide={() => setToastVisible(false)}
       />
+      {
+        loading && <DefaultLoader/>
+      }
     </SafeAreaView>
   );
 };

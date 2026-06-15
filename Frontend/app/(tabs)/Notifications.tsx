@@ -14,6 +14,7 @@ const Notifications = () => {
   const {isDark} = useTheme()
   const [notifications, setNotifications] = useState<Notifications_type[]>([])
   const [loading, setLoading] = useState(false)
+  const [refreshing, setRefreshing] = useState(false);
   const limit = 10;
   const offset = 0;
 
@@ -33,6 +34,21 @@ const Notifications = () => {
     finally{
       setLoading(false)
     }
+  }
+
+  const handleRefresh = async () => {
+    try{
+      setRefreshing(true)
+      await fetchNotifications();
+    }
+    catch(error:any){
+      console.error(error.message);
+    }
+    finally
+    {
+      setRefreshing(false)
+    }
+
   }
 
 
@@ -137,30 +153,32 @@ const handle_clear_allNotifications = async () => {
           </View>
       <View>
        <FlatList
-       data={notifications}
-       renderItem={({item}) => 
-         <NotificationCard
-          title={item.title}
-          message={item.message}
-          time={item.created_at}
-          is_read={item.is_read}
-          type={item.type}
-          onClose={() => delete_Notification(item.id)}
-          onPress={() => handleReadNotification(item.id)}
-        />
-       }
-       ListHeaderComponent={
-        <View className='px-3'>
-          <TouchableOpacity onPress={handle_clear_allNotifications}>
-            <Text className='text-primary font-bold'>Clear all</Text>
-          </TouchableOpacity>
-        </View>}
-       ListEmptyComponent={
-          <View className='mt-10 flex fleex-col items-center'>
-            <Image source={images.no_notification} style={{width:200, height:200}}/>
-            <Text className='font-bold text-xl text-muted'>No Notifications Yet </Text>
-            <Text className='text-md text-gray-400'>your Notifcations will apear here</Text>
-        </View>
+          data={notifications}
+          refreshing={refreshing}
+          onRefresh={handleRefresh}
+          renderItem={({item}) => 
+            <NotificationCard
+              title={item.title}
+              message={item.message}
+              time={item.created_at}
+              is_read={item.is_read}
+              type={item.type}
+              onClose={() => delete_Notification(item.id)}
+              onPress={() => handleReadNotification(item.id)}
+            />
+          }
+          ListHeaderComponent={
+            <View className='px-3'>
+              <TouchableOpacity onPress={handle_clear_allNotifications}>
+                <Text className='text-primary font-bold'>Clear all</Text>
+              </TouchableOpacity>
+            </View>}
+          ListEmptyComponent={
+              <View className='mt-10 flex fleex-col items-center'>
+                <Image source={images.no_notification} style={{width:200, height:200}}/>
+                <Text className='font-bold text-xl text-muted'>No Notifications Yet </Text>
+                <Text className='text-md text-gray-400'>your Notifcations will apear here</Text>
+            </View>
        }/>
       </View>
       {
